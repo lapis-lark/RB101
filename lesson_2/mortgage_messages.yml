@@ -1,0 +1,6 @@
+welcome: "Welcome to Mortgage Calculator!"
+principal?: "What's your principal loan amount?"
+apr?: "What is your annual percentage rate (APR)?"
+duration?: "How many years is your loan?"
+continue?: "Will you calculate another mortgage? (y/n)"
+

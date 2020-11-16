@@ -1,0 +1,6 @@
+en:
+  welcome: "Welcome to Calculator! What's your name?"
+  divide_by_zero: "Don't try to divide by zero, silly."
+jp:
+  welcome: "ようこそ、電卓プログラムへ！お名前を入力してください。"
+  divide_by_zero: "零因子はだめですよ。有効な番号を入れてください。"
