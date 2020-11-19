@@ -69,7 +69,18 @@ end
 def random_fighter(fighters)
   choice = CHOICES.values.sample
   description = fighters[CHOICES.values.index(choice)]
-  { choice: choice, description: description }
+  { rpsls: choice, description: description }
+end
+
+def get_player_fighter(fighters)
+  loop do
+    player_choice = get_choice
+    if valid?(player_choice)
+      fighter = fighters[CHOICES.keys.index(player_choice)]
+      break { rpsls: CHOICES[player_choice], description: fighter }
+    end
+    prompt 'Invalid input. Please try again.'
+  end
 end
 
 def valid?(choice)
@@ -77,17 +88,15 @@ def valid?(choice)
   CHOICES.include?(choice) ? true : false
 end
 
-def get_fighter
-  prompt <<~MSG.gsub(/\n/, ' ')
-          Choose your champion with
-          #{CHOICES.keys[0...-1].join(', ').upcase} or
-          #{CHOICES.keys[-1].upcase}.
-          MSG
+def get_choice
+  prompt "Choose your champion with" \
+          "#{CHOICES.keys[0...-1].join(', ').upcase} or" \
+          "#{CHOICES.keys[-1].upcase}."
   gets.chomp
 end
 
 def win?(first, second)
-  WIN_CASES[first[:choice]].include?(second[:choice])
+  WIN_CASES[first[:rpsls]].include?(second[:rpsls])
 end
 
 def winner(player, computer)
@@ -170,19 +179,12 @@ end
 scores = { player: 0, computer: 0 }
 clear_screen
 display_welcome
+
 loop do
   fighters = generate_fighters
   display_fighters(fighters)
 
-  player_fighter = loop do
-    player = get_fighter
-    if valid?(player)
-      fighter = fighters[CHOICES.keys.index(player)]
-      player_fighter = { choice: CHOICES[player], description: fighter }
-      break player_fighter
-    end
-    prompt 'Invalid input. Please try again.'
-  end
+  player_fighter = get_player_fighter(fighters)
   computer_fighter = random_fighter(fighters)
 
   victor = winner(player_fighter, computer_fighter)
