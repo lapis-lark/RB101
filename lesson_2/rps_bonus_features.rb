@@ -173,7 +173,7 @@ display_welcome
 loop do
   fighters = generate_fighters
   display_fighters(fighters)
-  
+
   player_fighter = loop do
     player = get_fighter
     if valid?(player)
