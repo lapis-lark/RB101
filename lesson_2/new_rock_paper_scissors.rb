@@ -1,12 +1,3 @@
-require 'pry'
-=begin
-### TO DO
-# add clear screen method
-# refactor more of the body into methods
-# look at other code reviews and make improvements
-# better ways of getting fighter and choice to match than index?
-=end
-
 CHOICES = {
   'r' => 'rock',
   'p' => 'paper',
@@ -182,6 +173,7 @@ display_welcome
 loop do
   fighters = generate_fighters
   display_fighters(fighters)
+  
   player_fighter = loop do
     player = get_fighter
     if valid?(player)
