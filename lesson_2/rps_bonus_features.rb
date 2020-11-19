@@ -64,6 +64,9 @@ end
 def display_fighters(fighters)
   prompt "Our champions this round are:"
   fighters.each { |fighter| puts '       ' "The #{fighter}" }
+  prompt "Choose your champion with " \
+          "#{CHOICES.keys[0...-1].join(', ').upcase} or " \
+          "#{CHOICES.keys[-1].upcase}."
 end
 
 def random_fighter(fighters)
@@ -74,7 +77,7 @@ end
 
 def get_player_fighter(fighters)
   loop do
-    player_choice = get_choice
+    player_choice = gets.chomp
     if valid?(player_choice)
       fighter = fighters[CHOICES.keys.index(player_choice)]
       break { rpsls: CHOICES[player_choice], description: fighter }
@@ -86,13 +89,6 @@ end
 def valid?(choice)
   choice.downcase!
   CHOICES.include?(choice) ? true : false
-end
-
-def get_choice
-  prompt "Choose your champion with" \
-          "#{CHOICES.keys[0...-1].join(', ').upcase} or" \
-          "#{CHOICES.keys[-1].upcase}."
-  gets.chomp
 end
 
 def win?(first, second)
@@ -159,15 +155,15 @@ def display_grand_winner(winner)
 end
 
 def continue?
-  prompt 'Continue to the next round? (y/n)'
+  prompt "Press enter to continue or type 'quit' to quit."
   loop do
     ans = gets.chomp.downcase
-    if ans == 'y'
+    if ans == ''
       break true
-    elsif ans == 'n'
+    elsif ans == 'quit'
       break false
     else
-      prompt "Please reply with either 'y' or 'n'."
+      prompt 'Input invalid. Please try again.'
     end
   end
 end
