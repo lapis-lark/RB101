@@ -38,6 +38,103 @@ DEFEAT = <<-'MSG'
 
 MSG
 
+YOU = <<-'MSG'
+ __     ______  _    _
+ \ \   / / __ \| |  | |  _
+  \ \_/ / |  | | |  | | (_)
+   \   /| |  | | |  | |
+    | | | |__| | |__| |  _
+    |_|  \____/ \____/  (_)
+
+
+MSG
+
+CPU = <<-'MSG'
+   _____ _____  _    _
+  / ____|  __ \| |  | |  _
+ | |    | |__) | |  | | (_)
+ | |    |  ___/| |  | |
+ | |____| |    | |__| |  _
+  \_____|_|     \____/  (_)
+
+
+MSG
+
+ZERO = <<-'MSG'
+   ___
+  / _ \
+ | | | |
+ | | | |
+ | |_| |
+  \___/
+
+
+MSG
+
+ONE = <<-'MSG'
+  __
+ /_ |
+  | |
+  | |
+  | |
+  |_|
+
+
+MSG
+
+TWO = <<-'MSG'
+  ___
+ |__ \
+    ) |
+   / /
+  / /_
+ |____|
+
+
+MSG
+
+THREE = <<-'MSG'
+  ____
+ |___ \
+   __) |
+  |__ <
+  ___) |
+ |____/
+
+
+MSG
+
+FOUR = <<-'MSG'
+  _  _
+ | || |
+ | || |_
+ |__   _|
+    | |
+    |_|
+
+
+MSG
+
+FIVE = <<-'MSG'
+  _____
+ | ____|
+ | |__
+ |___ \
+  ___) |
+ |____/
+
+
+MSG
+
+NUMBERS = {
+  0 => ZERO,
+  1 => ONE,
+  2 => TWO,
+  3 => THREE,
+  4 => FOUR,
+  5 => FIVE,
+}
+
 ADJECTIVES = %w[beastly terrifying splendiferous
                 magnanimous whimsical nonchalant
                 absurd quixotic dreadful fluffy]
@@ -136,10 +233,6 @@ def display_results(player, computer, winner, scores)
   else
     prompt messages[:tie]
   end
-
-  prompt "Scores:"
-  puts '       ' + "You: #{scores[:player]}"
-  puts '       ' + "Computer: #{scores[:computer]}"
 end
 
 def grand_winner?(scores)
@@ -172,11 +265,16 @@ def display_welcome
   prompt "Welcome to #{CHOICES.values.join(', ').upcase}!!!"
 end
 
+def scoreboard(scores)
+  puts YOU + NUMBERS[scores[:player]] + CPU + NUMBERS[scores[:computer]]
+end
+
 scores = { player: 0, computer: 0 }
 clear_screen
 display_welcome
 
 loop do
+  scoreboard(scores)
   fighters = generate_fighters
   display_fighters(fighters)
 
