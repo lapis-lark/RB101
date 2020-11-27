@@ -1,0 +1,15 @@
+
+[1mFrom:[0m /home/ubuntu/RB101/lesson_3/small_problems/max_rotation.rb:15 Object#max_rotation:
+
+    [1;34m10[0m:   rotate_array(int.to_s.chars).join([31m[1;31m'[0m[31m[1;31m'[0m[31m[0m)
+    [1;34m11[0m: [32mend[0m
+    [1;34m12[0m: 
+    [1;34m13[0m: [32mdef[0m [1;34mmax_rotation[0m(num)
+    [1;34m14[0m:   [32mif[0m num / [1;34m10[0m == [1;34m0[0m
+ => [1;34m15[0m:     num
+    [1;34m16[0m:   [32melse[0m
+    [1;34m17[0m:     binding.pry
+    [1;34m18[0m:     num = rotate_array(num.digits)
+    [1;34m19[0m:     num[[1;34m1[0m..[1;34m-1[0m] = max_rotation(num[[1;34m1[0m..[1;34m-1[0m].join([31m[1;31m'[0m[31m[1;31m'[0m[31m[0m).to_i).digits
+    [1;34m20[0m:     num.join([31m[1;31m'[0m[31m[1;31m'[0m[31m[0m).to_i
+
