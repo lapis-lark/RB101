@@ -23,8 +23,7 @@ def substrings string
 end
 
 def palindrome? word
-    half_size = word.size / 2
-    word[0, half_size] == word[-half_size, half_size].reverse
+  word == word.reverse
 end
 
 
