@@ -1,3 +1,5 @@
+
+
 def fibonacci(num)
   return 1 if (num == 1 || num == 2)
   return 0 if num < 1

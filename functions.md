@@ -1,0 +1,13 @@
+- ceil
+  - halvsies.rb
+- inject
+  - reversed_arrays2.rb
+- partition
+  - with_index
+    - halvsies.rb
+- find/detect (alias)
+  - find_the_duplicates.rb
+- count
+  - ""
+- any
+  - does_include.rb

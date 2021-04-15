@@ -1,14 +1,14 @@
 def reversal(array)
-  midpoint = array.size / 2
-  first = 0
-  last = -1
-  i = 0
+  left = 0
+  right = -1
 
-  while i < midpoint
-    array[first + i], array[last - i] = array[last - i], array[first + i]
-    i += 1
+  while left < array.size / 2
+    array[left], array[right] = array[right], array[left]
+    left += 1
+    right -= 1
   end
 
+  array
 end
 
 list = [1,2,3,4]
