@@ -11,3 +11,10 @@
   - ""
 - any
   - does_include.rb
+- capitalize
+  - capitalize_words.rb
+- match
+  -staggered_cap2.rb
+- format
+  -mutliplicative_average.rb
+

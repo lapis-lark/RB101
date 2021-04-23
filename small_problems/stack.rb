@@ -1,5 +1,7 @@
 require 'pry'
 
+COMMANDS = {push: Proc{stack.push(command)}}
+
 def minilang commands
   stack = []
   register = 0
