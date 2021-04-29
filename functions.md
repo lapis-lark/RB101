@@ -17,4 +17,7 @@
   -staggered_cap2.rb
 - format
   -mutliplicative_average.rb
+- divmod
+  -double_doubles.rb
+
 
