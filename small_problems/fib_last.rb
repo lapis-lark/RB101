@@ -1,10 +1,11 @@
 def fibonacci(n)
-  first, last = [1, 1]
-    (n - 2).times do 
-      first, last = [last, first + last]
-    end
-    last
+  first = 1
+  last = 1
+  (n - 2).times do
+    first, last = [last, first + last]
   end
+  last
+end
 
 def fibonacci_last(nth)
   fibonacci(nth) % 10

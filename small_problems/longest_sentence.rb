@@ -27,6 +27,6 @@ def longest_word(text)
 end
 
 book = File.read("frankenstein.txt").chomp
-#puts longest_sentence(book).split.size
+# puts longest_sentence(book).split.size
 puts longest_paragraph(book)
-#puts longest_word(book).size
+# puts longest_word(book).size

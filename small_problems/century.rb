@@ -1,11 +1,11 @@
-def century year
+def century(year)
   century = year.to_i / 100
   century += 1 unless year % 100 == 0
 
   "#{century}#{get_suffix(century)}"
 end
 
-def get_suffix century
+def get_suffix(century)
   return 'th' if (11..13).include?(century % 100)
 
   case century % 10
@@ -15,10 +15,6 @@ def get_suffix century
   else 'th'
   end
 end
-
-
-
-
 
 p century(2000) == '20th'
 p century(2001) == '21st'

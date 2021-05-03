@@ -1,4 +1,4 @@
-def sum int
+def sum(int)
   digits = int.to_s.chars.map!(&:to_i)
   digits.inject(:+)
 end

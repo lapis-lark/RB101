@@ -1,4 +1,3 @@
-
 # no #reverse
 =begin
 def reverse_sentence(string)
@@ -28,7 +27,7 @@ def reverse_if_big(string)
   string.split.each do |word|
     word.reverse! if word.length >= 5
     words << word
-    end
+  end
 
   words.join(' ')
 end

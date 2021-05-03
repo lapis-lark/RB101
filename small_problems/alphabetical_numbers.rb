@@ -1,6 +1,6 @@
 =begin
 NAMES = %w(zero one two three four five six seven eight nine
-           ten eleven twelve thirteen fourteen fifteen sixteen 
+           ten eleven twelve thirteen fourteen fifteen sixteen
            seventeen eighteen nineteen)
 
 def alphabetic_number_sort(num_arr)

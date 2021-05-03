@@ -4,7 +4,7 @@ def halvsies(arr)
 end
 
 def halvsies(arr)
-  arr.partition.with_index { |e, i| i < (arr.size / 2.0)  }
+  arr.partition.with_index { |_e, i| i < (arr.size / 2.0) }
 end
 
 p halvsies([1, 2, 3, 4]) #== [[1, 2], [3, 4]]

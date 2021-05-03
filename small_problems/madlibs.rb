@@ -1,4 +1,4 @@
-words = {noun: '', verb: '', adjective: '', adverb: ''}
+words = { noun: '', verb: '', adjective: '', adverb: '' }
 
 words.each_key do |key|
   puts ">> #{key} please: "

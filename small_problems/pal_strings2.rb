@@ -1,4 +1,4 @@
-def real_palindrome? word
+def real_palindrome?(word)
   alpha_num = word.gsub(/[^0-9a-z]/i, '').downcase
   alpha_num == alpha_num.reverse
 end

@@ -11,11 +11,10 @@ end
 def dms(float)
   float = float.to_f
   total_seconds = (float * 3600).round
-  total_minutes, seconds = total_seconds.divmod(60) 
+  total_minutes, seconds = total_seconds.divmod(60)
   degrees, minutes = total_minutes.divmod(60)
   puts format("%d#{DEGREE}%02d\'%02d\"", degrees, minutes, seconds)
 end
-
 
 dms(30) == %(30°00'00")
 dms(76.73) == %(76°43'48")

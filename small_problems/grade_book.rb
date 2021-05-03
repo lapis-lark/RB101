@@ -9,7 +9,5 @@ def get_grade(t1, t2, t3)
   end
 end
 
-
-
 p get_grade(95, 90, 93) == "A"
 p get_grade(50, 50, 95) == "D"

@@ -5,7 +5,7 @@ def leading_substrings(str)
 end
 
 def leading_substrings(str)
-  str.chars.map.with_index { |c, i| str[0..i] }
+  str.chars.map.with_index { |_c, i| str[0..i] }
 end
 
 p leading_substrings('abc') #== ['a', 'ab', 'abc']

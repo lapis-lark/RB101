@@ -1,7 +1,7 @@
 def lights_on(num)
   lights = []
   x = 1
-  until (x > num)
+  until x > num
     0.step(by: x, to: num) do |i|
       lights.include?(i) ? lights.delete(i) : lights.push(i)
     end

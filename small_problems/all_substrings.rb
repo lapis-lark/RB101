@@ -1,5 +1,5 @@
 def leading(str)
-  str.chars.map.with_index { |c, i| str[0..i] }
+  str.chars.map.with_index { |_c, i| str[0..i] }
 end
 
 def substrings(str)

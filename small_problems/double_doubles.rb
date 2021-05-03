@@ -4,7 +4,7 @@ def twice(num)
 
   return num * 2 if digits.size.odd?
   return num * 2 if digits[0...mid] != digits[mid..-1]
-  return num
+  num
 end
 
 # solution by Pierre-Emmanuel Roussel
@@ -12,8 +12,6 @@ def twice(num)
   first, second = num.divmod(10**(num.to_s.size / 2))
   first == second ? num : num * 2
 end
-
-
 
 p twice(37) == 74
 p twice(44) == 44

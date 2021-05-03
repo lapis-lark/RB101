@@ -11,11 +11,11 @@ def reversal(array)
   array
 end
 
-list = [1,2,3,4]
+list = [1, 2, 3, 4]
 result = reversal(list)
 p result #== [4, 3, 2, 1] # true
 list == [4, 3, 2, 1] # true
-list.object_id == result.object_id # true
+list.equal?(result) # true
 
 list = %w(a b e d c)
 p reversal(list) #== ["c", "d", "e", "b", "a"] # true

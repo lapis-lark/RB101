@@ -1,5 +1,5 @@
 def digit_list(num)
-  num.to_s.split(//) {|x| x.to_i }
+  num.to_s.split(//) { |x| x.to_i }
 end
 
 p digit_list(12334409)

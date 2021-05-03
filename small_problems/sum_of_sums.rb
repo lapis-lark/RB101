@@ -18,7 +18,7 @@ def sum_of_sums(arr)
 end
 
 def sum_of_sums(arr)
-  arr.map.with_index do |num, i|
+  arr.map.with_index do |_num, i|
     arr[0..i]
   end.flatten.inject(:+)
 end

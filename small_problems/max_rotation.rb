@@ -12,8 +12,4 @@ def max_rotation(num)
   end
 end
 
-
-
-
-
 p max_rotation(735291)

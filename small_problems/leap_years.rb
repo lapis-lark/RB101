@@ -1,12 +1,10 @@
-def leap_year? year
-  case
-  when year < 1752
+def leap_year?(year)
+  if year < 1752
     year % 4 == 0
   else
     (year % 400 == 0) || (!(year % 100 == 0) && year % 4 == 0)
   end
 end
-
 
 p leap_year?(2016) == true
 p leap_year?(2015) == false

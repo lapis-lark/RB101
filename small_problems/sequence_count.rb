@@ -31,14 +31,13 @@ end
 def sequence(count, increment)
   return [] if count.zero?
   arr = [increment]
-  count.times do |i|
+  count.times do |_i|
     arr << (arr.last + increment)
   end
   arr
 end
 
-
 p sequence(5, 1) #== [1, 2, 3, 4, 5]
-p sequence(4, -7) #s== [-7, -14, -21, -28]
+p sequence(4, -7) # s== [-7, -14, -21, -28]
 p sequence(3, 0) == [0, 0, 0]
 p sequence(0, 1000000) == []

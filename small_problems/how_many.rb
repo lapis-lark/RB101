@@ -30,4 +30,3 @@ def count_occurrences(array)
 end
 
 count_occurrences(vehicles)
-

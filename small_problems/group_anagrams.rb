@@ -13,11 +13,11 @@ def anagramize(arr)
     anagrams[key] += [word]
   end
 
-  anagrams.values.each {|v| p v }
+  anagrams.values.each { |v| p v }
 end
 
-words=['demo', 'none', 'tied', 'evil', 'dome', 'mode', 'live',
-          'fowl', 'veil', 'wolf', 'diet', 'vile', 'edit', 'tide',
-          'flow', 'neon']
+words = ['demo', 'none', 'tied', 'evil', 'dome', 'mode', 'live',
+         'fowl', 'veil', 'wolf', 'diet', 'vile', 'edit', 'tide',
+         'flow', 'neon']
 
 anagramize(words)

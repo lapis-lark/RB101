@@ -1,7 +1,7 @@
 require 'benchmark'
 
 def leading(str)
-  str.chars.map.with_index { |c, i| str[0..i] }
+  str.chars.map.with_index { |_c, i| str[0..i] }
 end
 
 def substrings(str)
@@ -23,9 +23,9 @@ def palindromes2(str)
 end
 
 puts Benchmark.measure {
-  50_000.times { palindromes1('racecarpotato')}
+  50_000.times { palindromes1('racecarpotato') }
 }
 
 puts Benchmark.measure {
-  50_000.times { palindromes2('racecarpotato')}
+  50_000.times { palindromes2('racecarpotato') }
 }

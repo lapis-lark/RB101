@@ -7,7 +7,7 @@
     - halvsies.rb
 - find/detect (alias)
   - find_the_duplicates.rb
-- count
+- count (str/arr versions are different!!)
   - ""
 - any
   - does_include.rb
@@ -21,6 +21,7 @@
   -double_doubles.rb
 - max_by
   - longest_sentence.rb
-- 
+- none (powerful w/blocks for checking patterns)
+  - now_i_know.rb
 
 

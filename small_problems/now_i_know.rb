@@ -2,21 +2,27 @@
 # if not, return false
 # true at bottom
 
-
 PAIRS = [["B", "O"], ["X", "K"], ["D", "Q"],
          ["C", "P"], ["N", "A"], ["G", "T"],
-         ["R", "E"], ["F", "S"], ["J", "W"], 
-         ["H", "U"], ["V", "I"], ["L", "Y"], 
+         ["R", "E"], ["F", "S"], ["J", "W"],
+         ["H", "U"], ["V", "I"], ["L", "Y"],
          ["Z", "M"]]
 
 def block_word?(word)
-  valid_pairs = PAIRS
-  valid = valid_pairs.flatten
+  valid = PAIRS.dup
   word.upcase.chars.each do |c|
-    return false unless valid.include?(c)
-    valid_pairs.reject! { |pair| pair.include?(c) }
+    return false unless valid.flatten.include?(c)
+    valid.reject! { |pair| pair.include?(c) }
   end
   true
+end
+
+# Launch School Solution
+BLOCKS = %w(BO XK DQ CP NA GT RE FS JW HU VI LY ZM).freeze
+
+def block_word?(string)
+  up_string = string.upcase
+  BLOCKS.none? { |block| up_string.count(block) >= 2 }
 end
 
 p block_word?('BATCH') #== true

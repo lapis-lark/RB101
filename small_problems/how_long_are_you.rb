@@ -1,7 +1,6 @@
 def word_lengths(str)
-  str.split.map { |word| "#{word} #{word.size}"}
+  str.split.map { |word| "#{word} #{word.size}" }
 end
-
 
 p word_lengths("baseball hot dogs and apple pie") ==
   ["baseball 8", "hot 3", "dogs 4", "and 3", "apple 5", "pie 3"]

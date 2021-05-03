@@ -6,11 +6,11 @@ def cleanup(string)
   string.chars.each do |char|
     if VALID_CHARS.include?(char)
       new_string << char
-    else 
+    else
       new_string << ' ' unless new_string[-1] == ' '
     end
   end
-  
+
   new_string
 end
 

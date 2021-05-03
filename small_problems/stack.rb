@@ -1,8 +1,8 @@
 require 'pry'
 
-COMMANDS = {push: Proc{stack.push(command)}}
+COMMANDS = { push: Proc { stack.push(command) } }
 
-def minilang commands
+def minilang(commands)
   stack = []
   register = 0
   commands.split.each do |command|
@@ -32,7 +32,6 @@ def minilang commands
     end
   end
 end
-
 
 minilang('PRINT')
 # 0

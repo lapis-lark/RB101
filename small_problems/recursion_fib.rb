@@ -1,10 +1,10 @@
-def fibonacci(n)  
+def fibonacci(n)
   n > 2 ? fibonacci(n - 1) + fibonacci(n - 2) : 1
 end
 
 def fibonacci(n)
-fib_arr = [1, 1]
-  (n - 2).times do 
+  fib_arr = [1, 1]
+  (n - 2).times do
     fib_arr << fib_arr[-1] + fib_arr[-2]
   end
   fib_arr.last
@@ -19,4 +19,4 @@ p fibonacci(12) == 144
 p fibonacci(20) == 6765
 fibonacci(20) == 6765
 p fibonacci(100) == 354224848179261915075
-#p fibonacci(100_001) # => 4202692702.....8285979669707537501
+# p fibonacci(100_001) # => 4202692702.....8285979669707537501

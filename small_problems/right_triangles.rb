@@ -1,9 +1,9 @@
 def triangle(base)
-  (0...base).reverse_each { |i| puts "#{'*' * (base - i)}".rjust(base)}
+  (0...base).reverse_each { |i| puts ('*' * (base - i)).to_s.rjust(base) }
 end
 
 def triangle(base)
-  base.times { |i| puts "#{'*' * (i + 1)}".rjust(base)}
+  base.times { |i| puts ('*' * (i + 1)).to_s.rjust(base) }
 end
 =begin
 def triangle(base)
