@@ -10,10 +10,11 @@ PAIRS = [["B", "O"], ["X", "K"], ["D", "Q"],
          ["Z", "M"]]
 
 def block_word?(word)
-  valid = PAIRS
+  valid_pairs = PAIRS
+  valid = valid_pairs.flatten
   word.upcase.chars.each do |c|
-    return false unless valid.flatten.include?(c)
-    valid.reject! { |pair| pair.include?(c) }
+    return false unless valid.include?(c)
+    valid_pairs.reject! { |pair| pair.include?(c) }
   end
   true
 end
@@ -21,3 +22,6 @@ end
 p block_word?('BATCH') #== true
 p block_word?('BUTCH') #== false
 p block_word?('jest') #== true
+p block_word?('hello')
+p block_word?('HELLO')
+p block_word?('BACK')

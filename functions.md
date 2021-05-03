@@ -19,5 +19,8 @@
   -mutliplicative_average.rb
 - divmod
   -double_doubles.rb
+- max_by
+  - longest_sentence.rb
+- 
 
 
