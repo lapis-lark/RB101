@@ -7,7 +7,6 @@ def triangle(a, b, c)
 end
 
 def invalid?(sides)
-  
   sides[0..1].sum < sides[2] || sides.include?(0)
 end
 

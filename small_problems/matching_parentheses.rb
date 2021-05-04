@@ -19,14 +19,21 @@ def balanced?(str)
   match.values.all? { |v| v == 0 }
 end
 
-def balanced?(string)
-  open, close = 0, 0
-  string.scan(/[\(\[\{\)\]\}]/).each do |character|
-    character =~ /[\(\[\{]/ ? open += 1 : close += 1
-    break if close > open
+# best solution found (by Ricky Viejo)
+
+def balanced_chars?(str, chars)
+  count = 0
+  str.each_char do |char|
+    count += 1 if char == chars[0]
+    count -= 1 if char == chars[1]
+    break if count < 0
   end
-  quotes = string.scan(/(?<=[^a-z])'|'(?=[^a-z])|"/i).size
-  open == close && quotes.even?
+  count.zero?
+end
+
+def balanced?(str)
+  chars = %w(() {} '' "")
+  chars.all? {|char| balanced_chars?(str, char)}
 end
 
 p balanced?('What (is) this?') == true
