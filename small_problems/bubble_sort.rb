@@ -13,7 +13,7 @@ def bubble_sort!(arr)
 end
 
 
-# optimization/futher exploration
+# optimization/futher explorationc
 def bubble_sortx!(arr)
   loop do
     swapped = false
