@@ -1,14 +1,17 @@
-def transpose(arr)
-  arr[0].zip(arr[1], arr[2])
+def transpose(matrix)
+  matrix[0].zip(matrix[1], matrix[2])
 end
 
-def transpose(matrix)
+# further exploration; works for any size matrix
+def transpose(arr)
+  matrix = []
   size = matrix.size
-  rounds = size - 1
-
-  rounds == 0 ? matrix : transpose(matrix)
-
+  (size - 1).times do |y|
+    ((y + 1)...size).each do |x|
+      matrix[y][x], matrix[x][y] = matrix[x][y], matrix[y][x]
+    end
   end
+  matrix
 end
 
 matrix = [
