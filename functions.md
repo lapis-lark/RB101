@@ -23,5 +23,7 @@
   - longest_sentence.rb
 - none (powerful w/blocks for checking patterns)
   - now_i_know.rb
+- minmax_by
+  - 5/sorting_notes.rb
 
 

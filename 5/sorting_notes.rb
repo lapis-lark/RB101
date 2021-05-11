@@ -1,3 +1,8 @@
+QUIZ:
+1. # what is the difference between #sort and #sort_by? how are the blocks they take different?
+      # ans: 1.rb
+
+
 # the sort method manages to sort ints, strs, etc. by using the <=> (spaceship) operator
 
 2 <=> 1 # => 1
