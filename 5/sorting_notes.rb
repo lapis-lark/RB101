@@ -55,5 +55,3 @@ end
 #some other interesting comparison methods:
 #min, #max, #minmax, #min_by, #max_by, #minmax_by
 
-[['a', 'cat', 'b', 'c'], ['b', 2], ['a', 'car', 'd', 3], ['a', 'car', 'd']].minmax
-# => [["a", "car", "d"], ["b", 2]]
