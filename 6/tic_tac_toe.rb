@@ -50,7 +50,12 @@ def tie?
 end
 
 def horizontal
-  BOARD.any? { |row| row.join =~ /(XXX|OOO)/  }
+  match = []
+  BOARD.each do |row| 
+    match = row.join.match(/(XXX|OOO)/)
+    return match[0] if match 
+  end
+  false
 end
 
 def rotate90(matrix)
@@ -62,10 +67,24 @@ def rotate90(matrix)
 end
 
 def vertical
-  rotate90(board).any? { |row| row.join =~ /(XXX|OOO)/  }
+  match = []
+  BOARD.each do |row| 
+    match = row.join.match(/(XXX|OOO)/)
+    return match[0] if match 
+  end
+  false
 end
 
-def 
+def diagonal
+  d1, d2 = '', ''
+  BOARD.each_with_index do |row, index| 
+    d1 << row[index]
+    d2 << row[2 - index]
+  end
+  # '.' for avoiding matches made of half d1 half d2
+  match = (d1 + '.' + d2).match(/(XXX|OOO)/)
+  match.nil? ? false : match[0]
+end
 
 def winner?
   horizontal || vertical || diagonal
