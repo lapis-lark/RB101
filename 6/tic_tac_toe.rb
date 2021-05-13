@@ -20,10 +20,6 @@ def display_board
    ' ' + BOARD[2].join(' | ')])
 end
 
-def valid_square
-
-end
-
 def player_turn
   display_board
   prompt("Which square will you mark?")
@@ -54,7 +50,7 @@ def tie?
 end
 
 def winner?
-
+  winner = false
 end
 
 def display_winner(winner)
@@ -73,7 +69,8 @@ def prompt(str)
 end
 
 def play_again
-
+  BOARD.map! { Array.new(3, ' ') }
+  tic_tac_toe
 end
 
 
@@ -87,21 +84,7 @@ def tic_tac_toe
   end
 
   prompt("play again?")
-  tic_tac_toe if gets.chomp =~ /(y|yes)/
+  play_again if gets.chomp =~ /(y|yes)/
   prompt("thanks for playing!!")
 end
 
-# body
-prompt("Let's play TIC TAC TOE!!!")
-
-  if winner? == 'player'
-    victory_message
-    break
-  elsif winner? == 'cpu'
-    defeat_message
-    break unless play_again?
-  elsif tie? == true
-    tie_message
-    break
-  end
-end
