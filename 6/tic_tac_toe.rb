@@ -14,9 +14,9 @@ OPEN = []
 def display_board
   puts( 
   [' ' + BOARD[0].join(' | '),
-  ('_' * 11),
+  ('-' * 11),
    ' ' + BOARD[1].join(' | '),
-   ('_' * 11),
+   ('-' * 11),
    ' ' + BOARD[2].join(' | ')])
 end
 
@@ -31,7 +31,7 @@ def player_turn
     if OPEN.include?([row, column])
       BOARD[row][column] = 'X'
       OPEN.delete([row, column])
-      #break
+      break
     else
       prompt('Not available. Please choose again.')
     end
@@ -49,8 +49,26 @@ def tie?
   OPEN.empty?
 end
 
+def horizontal
+  BOARD.any? { |row| row.join =~ /(XXX|OOO)/  }
+end
+
+def rotate90(matrix)
+  new_m = []
+  matrix[0].size.times do |i|
+    new_m << matrix.reverse.map { |row| row[i] }
+  end
+  new_m
+end
+
+def vertical
+  rotate90(board).any? { |row| row.join =~ /(XXX|OOO)/  }
+end
+
+def 
+
 def winner?
-  winner = false
+  horizontal || vertical || diagonal
 end
 
 def display_winner(winner)
@@ -88,3 +106,4 @@ def tic_tac_toe
   prompt("thanks for playing!!")
 end
 
+tic_tac_toe
