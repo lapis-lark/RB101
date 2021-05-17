@@ -1,80 +1,53 @@
-BOARD = (Array.new(3, ' ') { Array.new(3, ' ') })
+require 'pry-byebug'
 
-POSITION = {
-  'T' => 0,
-  'M' => 1,
-  'B' => 2,
-  'L' => 0,
-  'R' => 2
-}
-
-OPEN = []
-(0..2).each { |y| (0..2).each { |x| OPEN << [y, x] } }
+BOARD = {}
+(1..9).each { |i| BOARD[i] = ' ' }
 
 def display_board
-  line = '---+---+---'
-  BOARD.each_with_index do |row, index|
-    puts " #{row.join(' | ')}"
-    puts line unless index == BOARD.size - 1
-  end
-  puts
+  puts " #{BOARD[1]} | #{BOARD[2]} | #{BOARD[3]}"
+  puts '---+---+---'
+  puts " #{BOARD[4]} | #{BOARD[5]} | #{BOARD[6]}"
+  puts '---+---+---'
+  puts " #{BOARD[7]} | #{BOARD[8]} | #{BOARD[9]}"
+  puts ''
 end
 
 def player_turn
   display_board
   prompt("which square will you mark?")
   loop do
-    puts "TL|TM|TR\nML|MM|MR\nBL|BM|BR\n\n"
-    ans = gets.chomp.upcase
-    row = POSITION[ans[0]]
-    column = POSITION[ans[1]]
-    if OPEN.include?([row, column])
-      BOARD[row][column] = 'X'
-      OPEN.delete([row, column])
+    puts "1|2|3\n4|5|6\n7|8|9\n\n"
+    square = gets.chomp
+    if BOARD[square.to_i] == ' '
+      BOARD[square.to_i] = 'X'
       break
     else
-      prompt('Not available. Please choose again.')
+      prompt('not available. please choose again.')
     end
   end
 end
 
 def computer_turn
-  mark = OPEN.sample
-  BOARD[mark.first][mark.last] = 'O'
-  OPEN.delete(mark)
+  square = BOARD.select { |_, v| v == ' ' }.keys.sample
+  BOARD[square] = 'O'
 end
 
 def tie?
-  OPEN.empty?
-end
-
-def horizontal(board)
-  match = []
-  board.each do |row|
-    match = row.join.match(/(XXX|OOO)/)
-    return match[0] if match
-  end
-  false
-end
-
-def vertical
-  horizontal(BOARD.transpose)
-end
-
-def diagonal
-  d1 = ''
-  d2 = ''
-  BOARD.each_with_index do |row, index|
-    d1 << row[index]
-    d2 << row[2 - index]
-  end
-  # '.' for avoiding matches made of half d1 half d2
-  match = "#{d1}.#{d2}".match(/(XXX|OOO)/)
-  match.nil? ? false : match[0]
+  BOARD.values.none? { |v| v == ' ' }
 end
 
 def winner?
-  horizontal(BOARD) || vertical || diagonal
+  winning_combos = [
+    [1, 2, 3], [4, 5, 6], [7, 8, 9],
+    [1, 4, 7], [2, 5, 8], [3, 6, 9],
+    [1, 5, 9], [7, 5, 3]
+  ]
+  winning_combos.each do |combo|
+    group = ''
+    combo.each { |v| group << BOARD[v] }
+    return group if group =~ /(XXX|OOO)/
+  end
+  false
 end
 
 def display_winner(winner)
@@ -93,13 +66,10 @@ def prompt(str)
 end
 
 def play_again
-  BOARD.map! { Array.new(3, ' ') }
-  OPEN.delete_at(0) until OPEN.empty?
-  (0..2).each { |y| (0..2).each { |x| OPEN << [y, x] } }
-  tic_tac_toe
+  BOARD.each { |k, _v| BOARD[k] = ' ' }
 end
 
-def tic_tac_toe
+loop do
   prompt("let's play TIC TAC TOE!!!")
   turn = 0
   loop do
@@ -110,8 +80,6 @@ def tic_tac_toe
   end
 
   prompt("play again?")
-  play_again if gets.chomp =~ /(y|yes)/
-  prompt("thanks for playing!!")
+  gets.chomp =~ /(y|yes)/i ? play_again : break
 end
-
-tic_tac_toe
+prompt("thanks for playing!!")

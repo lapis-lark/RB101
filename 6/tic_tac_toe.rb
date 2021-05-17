@@ -73,6 +73,9 @@ def diagonal
   match.nil? ? false : match[0]
 end
 
+# using this style of winner evaluation rather than hardcoded
+# winning combinations allows for checking any size of array...
+# but it's probably overkill for tic tac toe
 def winner?
   horizontal(BOARD) || vertical || diagonal
 end
