@@ -1,6 +1,6 @@
 require 'pry-byebug'
 
-BOARD = (Array.new(3, ' ') { Array.new(3, ' ') })
+BOARD = Array.new(3, ' ') { Array.new(3, ' ') }
 
 POSITION = {
   'T' => 0,
@@ -14,18 +14,19 @@ OPEN = []
 (0..2).each { |y| (0..2).each { |x| OPEN << [y, x] } }
 
 def display_board
-  line = ('-' * 3) + '+' + ('-' * 3) + '+' + ('-' * 3)
-  BOARD.each_with_index do |row, index| 
-    puts ' ' + row.join(' | ')
-    puts line unless index == BOARD.size - 1
-  end
+  puts( 
+  [' ' + BOARD[0].join(' | '),
+  ('-' * 11),
+   ' ' + BOARD[1].join(' | '),
+   ('-' * 11),
+   ' ' + BOARD[2].join(' | ')])
 end
 
 def player_turn
   display_board
   prompt("Which square will you mark?")
   loop do
-    puts ("TL|TM|TR\nML|MM|MR\nBL|BM|BR\n\n")
+    puts ("TL/TM/TR\nML/MM/MR\nBL/BM/BR")
     ans = gets.chomp.upcase
     row = POSITION[ans[0]]
     column = POSITION[ans[1]]
@@ -50,17 +51,31 @@ def tie?
   OPEN.empty?
 end
 
-def horizontal(board)
+def horizontal
   match = []
-  board.each do |row| 
+  BOARD.each do |row| 
     match = row.join.match(/(XXX|OOO)/)
     return match[0] if match 
   end
   false
 end
 
+def rotate90(matrix)
+  new_m = []
+  matrix[0].size.times do |i|
+    new_m << matrix.reverse.map { |row| row[i] }
+  end
+  new_m
+end
+
 def vertical
-  horizontal(BOARD.transpose)
+  match = []
+  rotated = rotate90(BOARD)
+  rotated.each do |row| 
+    match = row.join.match(/(XXX|OOO)/)
+    return match[0] if match 
+  end
+  false
 end
 
 def diagonal
@@ -75,12 +90,13 @@ def diagonal
 end
 
 def winner?
-  horizontal(BOARD) || vertical || diagonal
+  horizontal || vertical || diagonal
 end
 
 def display_winner(winner)
-  prompt('YOU WIN!!!') if winner == 'XXX'
-  prompt('THE MACHINE RACE WINS!!!') if winner == 'OOO'
+  byebug
+  prompt(winner + ' WIN!!!') if winner == 'YOU'
+  prompt(winner + ' WINS!!!') if winner == 'THE MACHINE RACE'
   winner
 end
 
@@ -90,23 +106,20 @@ def display_tie(tie)
 end
 
 def prompt(str)
-  puts "~~>" + str + "\n\n"
+  puts "~~>" + str
 end
 
 def play_again
   BOARD.map! { Array.new(3, ' ') }
-  OPEN.delete_at(0) until OPEN.empty?
-  (0..2).each { |y| (0..2).each { |x| OPEN << [y, x] } }
   tic_tac_toe
 end
 
 
 def tic_tac_toe
   prompt("Let's play TIC TAC TOE!!!")
-  turn = 0
   loop do 
-    turn.even? ? player_turn : computer_turn
-    turn += 1
+    player_turn
+    computer_turn
     break if display_winner(winner?)
     break if display_tie(tie?)
   end
