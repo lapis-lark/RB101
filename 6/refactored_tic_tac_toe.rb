@@ -1,6 +1,4 @@
-require 'pry-byebug'
-
-BOARD = Array.new(3, ' ') { Array.new(3, ' ') }
+BOARD = (Array.new(3, ' ') { Array.new(3, ' ') })
 
 POSITION = {
   'T' => 0,
@@ -14,19 +12,19 @@ OPEN = []
 (0..2).each { |y| (0..2).each { |x| OPEN << [y, x] } }
 
 def display_board
-  puts( 
-  [' ' + BOARD[0].join(' | '),
-  ('-' * 11),
-   ' ' + BOARD[1].join(' | '),
-   ('-' * 11),
-   ' ' + BOARD[2].join(' | ')])
+  line = '---+---+---'
+  BOARD.each_with_index do |row, index|
+    puts " #{row.join(' | ')}"
+    puts line unless index == BOARD.size - 1
+  end
+  puts
 end
 
 def player_turn
   display_board
-  prompt("Which square will you mark?")
+  prompt("which square will you mark?")
   loop do
-    puts ("TL/TM/TR\nML/MM/MR\nBL/BM/BR")
+    puts "TL|TM|TR\nML|MM|MR\nBL|BM|BR\n\n"
     ans = gets.chomp.upcase
     row = POSITION[ans[0]]
     column = POSITION[ans[1]]
@@ -46,57 +44,42 @@ def computer_turn
   OPEN.delete(mark)
 end
 
-
 def tie?
   OPEN.empty?
 end
 
-def horizontal
+def horizontal(board)
   match = []
-  BOARD.each do |row| 
+  board.each do |row|
     match = row.join.match(/(XXX|OOO)/)
-    return match[0] if match 
+    return match[0] if match
   end
   false
-end
-
-def rotate90(matrix)
-  new_m = []
-  matrix[0].size.times do |i|
-    new_m << matrix.reverse.map { |row| row[i] }
-  end
-  new_m
 end
 
 def vertical
-  match = []
-  rotated = rotate90(BOARD)
-  rotated.each do |row| 
-    match = row.join.match(/(XXX|OOO)/)
-    return match[0] if match 
-  end
-  false
+  horizontal(BOARD.transpose)
 end
 
 def diagonal
-  d1, d2 = '', ''
-  BOARD.each_with_index do |row, index| 
+  d1 = ''
+  d2 = ''
+  BOARD.each_with_index do |row, index|
     d1 << row[index]
     d2 << row[2 - index]
   end
   # '.' for avoiding matches made of half d1 half d2
-  match = (d1 + '.' + d2).match(/(XXX|OOO)/)
+  match = "#{d1}.#{d2}".match(/(XXX|OOO)/)
   match.nil? ? false : match[0]
 end
 
 def winner?
-  horizontal || vertical || diagonal
+  horizontal(BOARD) || vertical || diagonal
 end
 
 def display_winner(winner)
-  byebug
-  prompt(winner + ' WIN!!!') if winner == 'YOU'
-  prompt(winner + ' WINS!!!') if winner == 'THE MACHINE RACE'
+  prompt('YOU WIN!!!') if winner == 'XXX'
+  prompt('THE MACHINE RACE WINS!!!') if winner == 'OOO'
   winner
 end
 
@@ -106,20 +89,22 @@ def display_tie(tie)
 end
 
 def prompt(str)
-  puts "~~>" + str
+  puts "~~> #{str}\n\n"
 end
 
 def play_again
   BOARD.map! { Array.new(3, ' ') }
+  OPEN.delete_at(0) until OPEN.empty?
+  (0..2).each { |y| (0..2).each { |x| OPEN << [y, x] } }
   tic_tac_toe
 end
 
-
 def tic_tac_toe
-  prompt("Let's play TIC TAC TOE!!!")
-  loop do 
-    player_turn
-    computer_turn
+  prompt("let's play TIC TAC TOE!!!")
+  turn = 0
+  loop do
+    turn.even? ? player_turn : computer_turn
+    turn += 1
     break if display_winner(winner?)
     break if display_tie(tie?)
   end
