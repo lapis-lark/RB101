@@ -25,5 +25,8 @@
   - now_i_know.rb
 - minmax_by
   - 5/sorting_notes.rb
-
+- values_at
+  - refactored_tic_tac_toe.rb
+- * (splat) operator for passing array as series of arguemnts into functions  
+  - " "
 

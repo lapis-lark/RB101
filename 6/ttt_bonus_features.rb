@@ -1,5 +1,17 @@
 require 'pry-byebug'
 
+BOARD = {}
+(1..9).each { |i| BOARD[i] = ' ' }
+
+WINNING_COMBOS = [
+  [1, 2, 3], [4, 5, 6], [7, 8, 9],
+  [1, 4, 7], [2, 5, 8], [3, 6, 9],
+  [1, 5, 9], [7, 5, 3]
+]
+
+PLAYER = 'X'
+CPU = 'O'
+
 VICTORY = <<-'MSG'
 ___________________________________________________________________________________________
  ___________________________________________________________________________________________
@@ -10,7 +22,7 @@ ________________________________________________________________________________
       ___\//\\\\\____\/\\\_\//\\\___________\/\\\_/\\__\//\\\__/\\\__\/\\\__________/\\_/\\\_____
        ____\//\\\_____\/\\\__\///\\\\\\\\____\//\\\\\____\///\\\\\/___\/\\\_________\//\\\\/______
         _____\///______\///_____\////////______\/////_______\/////_____\///___________\////________
-
+        
 MSG
 
 DEFEAT = <<-'MSG'
@@ -24,114 +36,6 @@ DEFEAT = <<-'MSG'
 
 MSG
 
-YOU = <<-'MSG'
- __     ______  _    _
- \ \   / / __ \| |  | |  _
-  \ \_/ / |  | | |  | | (_)
-   \   /| |  | | |  | |
-    | | | |__| | |__| |  _
-    |_|  \____/ \____/  (_)
-
-
-MSG
-
-CPU = <<-'MSG'
-   _____ _____  _    _
-  / ____|  __ \| |  | |  _
- | |    | |__) | |  | | (_)
- | |    |  ___/| |  | |
- | |____| |    | |__| |  _
-  \_____|_|     \____/  (_)
-
-
-MSG
-
-ZERO = <<-'MSG'
-   ___
-  / _ \
- | | | |
- | | | |
- | |_| |
-  \___/
-
-
-MSG
-
-ONE = <<-'MSG'
-  __
- /_ |
-  | |
-  | |
-  | |
-  |_|
-
-
-MSG
-
-TWO = <<-'MSG'
-  ___
- |__ \
-    ) |
-   / /
-  / /_
- |____|
-
-
-MSG
-
-THREE = <<-'MSG'
-  ____
- |___ \
-   __) |
-  |__ <
-  ___) |
- |____/
-
-
-MSG
-
-FOUR = <<-'MSG'
-  _  _
- | || |
- | || |_
- |__   _|
-    | |
-    |_|
-
-
-MSG
-
-FIVE = <<-'MSG'
-  _____
- | ____|
- | |__
- |___ \
-  ___) |
- |____/
-
-
-MSG
-
-ASCII_NUMS = {
-  1 => ONE,
-  2 => TWO,
-  3 => THREE,
-  4 => FOUR,
-  5 => FIVE
-}
-
-BOARD = {}
-(1..9).each { |i| BOARD[i] = ' ' }
-
-WINNING_COMBOS = [
-  [1, 2, 3], [4, 5, 6], [7, 8, 9],
-  [1, 4, 7], [2, 5, 8], [3, 6, 9],
-  [1, 5, 9], [7, 5, 3]
-]
-
-PLAYER = 'X'
-CPU = 'O'
-
 def display_board
   puts " #{BOARD[1]} | #{BOARD[2]} | #{BOARD[3]}"
   puts '---+---+---'
@@ -139,6 +43,10 @@ def display_board
   puts '---+---+---'
   puts " #{BOARD[7]} | #{BOARD[8]} | #{BOARD[9]}"
   puts ''
+end
+
+def clear_screen
+  system('clear') || system('cls')
 end
 
 def player_turn
@@ -165,7 +73,11 @@ def tie?
   BOARD.values.none? { |v| v == ' ' }
 end
 
-def detect_winner
+def update_score(score, round_winner)
+  score[round_winner] += 1
+end
+
+def winner?
   WINNING_COMBOS.each do |combo|
     group = BOARD.values_at(*combo)
     if group.count(PLAYER) == 3
@@ -178,8 +90,8 @@ def detect_winner
 end
 
 def display_winner(winner)
-  prompt('YOU WIN!!!') if winner == PLAYER
-  prompt('THE MACHINE RACE WINS!!!') if winner == CPU
+  prompt('you win the round!!!') if winner == PLAYER
+  prompt('the machine race wins the round!!!') if winner == CPU
   winner
 end
 
@@ -196,13 +108,57 @@ def reset
   BOARD.each { |k, _| BOARD[k] = ' ' }
 end
 
+def change_player_character
+  prompt('is "X" okay as your marker?')
+  unless gets.chomp =~ /(y|yes)/i
+    loop do
+      prompt("input a single character other than 'O' ")
+      char = gets.chomp
+      if char.size == 1 && char != 'O'
+        PLAYER[0] = char 
+        break
+      else
+        prompt("invalid input. plz try again.")
+      end
+    end
+  end
+end
+
+def display_score(score)
+  puts "YOU: #{score[PLAYER]}"
+  puts "CPU: #{score[CPU]}"
+  puts ""
+end
+
+def display_grand_winner(score)
+  score[PLAYER] == 5 ? (puts VICTORY) : (puts DEFEAT)
+end
+
+def grand_winner?(score)
+  score.has_value?(5)
+end
+
+prompt("let's play TIC TAC TOE!!!")
+change_player_character
+score = {PLAYER => 0, CPU => 0}
 loop do
-  prompt("let's play TIC TAC TOE!!!")
-  turn = true
+  turn = [true, false].sample
   loop do
+    clear_screen
+    display_score(score)
     turn ? player_turn : computer_turn
     turn = !turn
-    break if display_winner(detect_winner)
+
+    round_winner = winner?
+    if round_winner
+      update_score(score, round_winner)
+      if grand_winner?(score)
+        display_grand_winner(score)
+        exit
+      end
+      display_winner(round_winner)
+      break
+    end
     break if display_tie(tie?)
   end
 
