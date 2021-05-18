@@ -60,11 +60,19 @@ def display_available
   prompt("which square will you mark? #{joinor(squares)}")
 end
 
+def valid_square
+  loop do
+    square = gets.chomp
+    return square if square.to_i.to_s == square
+    prompt("please input a valid integer")
+  end
+end
+
 def player_turn
   display_board
   loop do
     display_available
-    square = gets.chomp
+    square = valid_square
 
     if BOARD[square.to_i] == ' '
       BOARD[square.to_i] = PLAYER
@@ -79,9 +87,8 @@ def cpu_defense
   WINNING_COMBOS.each do |combo|
     values = BOARD.values_at(*combo)
     next if values.include?(CPU)
-    if values.count(PLAYER) == 2
-      return combo[values.index(' ')]
-    end
+    next unless values.count(PLAYER) == 2
+    return combo[values.index(' ')]
   end
   false
 end
@@ -90,9 +97,8 @@ def cpu_offense
   WINNING_COMBOS.each do |combo|
     values = BOARD.values_at(*combo)
     next if values.include?(PLAYER)
-    if values.count(CPU) == 2
-      return combo[values.index(' ')]
-    end
+    next unless values.count(CPU) == 2
+    return combo[values.index(' ')]
   end
   false
 end
@@ -141,10 +147,6 @@ def prompt(str)
   puts "~~> #{str}\n\n"
 end
 
-def reset
-  BOARD.each { |k, _| BOARD[k] = ' ' }
-end
-
 def change_player_character
   prompt('is "X" okay as your marker?')
   unless gets.chomp =~ /(y|yes)/i
@@ -177,8 +179,25 @@ def grand_winner?(score)
   score.value?(5)
 end
 
+def play_again
+  prompt("play again?")
+  loop do
+    ans = gets.chomp
+    case ans
+    when /(y|yes)/i
+      BOARD.each { |k, _| BOARD[k] = ' ' }
+      break true
+    when /(n|no)/i
+      break false
+    else
+      prompt('please input either y/yes or n/no')
+    end
+  end
+end
+
 # body
 prompt("let's play TIC TAC TOE!!!")
+prompt('earn eternal glory by reaching five victories before the AI')
 change_player_character
 score = { PLAYER => 0, CPU => 0 }
 
@@ -209,7 +228,6 @@ loop do
     break
   end
 
-  prompt("play again?")
-  gets.chomp =~ /(y|yes)/i ? reset : break
+  break unless play_again
 end
 prompt("thanks for playing!!")
