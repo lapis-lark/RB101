@@ -1,5 +1,3 @@
-require 'pry-byebug'
-
 BOARD = {}
 (1..9).each { |i| BOARD[i] = ' ' }
 
@@ -22,7 +20,7 @@ ________________________________________________________________________________
       ___\//\\\\\____\/\\\_\//\\\___________\/\\\_/\\__\//\\\__/\\\__\/\\\__________/\\_/\\\_____
        ____\//\\\_____\/\\\__\///\\\\\\\\____\//\\\\\____\///\\\\\/___\/\\\_________\//\\\\/______
         _____\///______\///_____\////////______\/////_______\/////_____\///___________\////________
-        
+
 MSG
 
 DEFEAT = <<-'MSG'
@@ -49,12 +47,25 @@ def clear_screen
   system('clear') || system('cls')
 end
 
+def joinor(arr, sym = ', ', conj = 'or')
+  case arr.size
+  when 1 then arr[0]
+  when 2 then "#{arr[0]} or #{arr[1]}"
+  else "#{arr[0...-1].join(sym)}#{sym}#{conj} #{arr[-1]}"
+  end
+end
+
+def display_available
+  squares = BOARD.select { |k, _| BOARD[k] == ' ' }.keys
+  prompt("which square will you mark? #{joinor(squares)}")
+end
+
 def player_turn
   display_board
-  prompt("which square will you mark?")
   loop do
-    puts "1|2|3\n4|5|6\n7|8|9\n\n"
+    display_available
     square = gets.chomp
+
     if BOARD[square.to_i] == ' '
       BOARD[square.to_i] = PLAYER
       break
@@ -64,8 +75,39 @@ def player_turn
   end
 end
 
+def cpu_defense
+  WINNING_COMBOS.each do |combo|
+    values = BOARD.values_at(*combo)
+    next if values.include?(CPU)
+    if values.count(PLAYER) == 2
+      return combo[values.index(' ')]
+    end
+  end
+  false
+end
+
+def cpu_offense
+  WINNING_COMBOS.each do |combo|
+    values = BOARD.values_at(*combo)
+    next if values.include?(PLAYER)
+    if values.count(CPU) == 2
+      return combo[values.index(' ')]
+    end
+  end
+  false
+end
+
 def computer_turn
-  square = BOARD.select { |_, v| v == ' ' }.keys.sample
+  square = if cpu_offense
+             cpu_offense
+           elsif cpu_defense
+             cpu_defense
+           elsif BOARD[5] == ' '
+             5
+           else
+             BOARD.select { |k, _| BOARD[k] == ' ' }.keys.sample
+           end
+
   BOARD[square] = CPU
 end
 
@@ -90,14 +132,9 @@ def winner?
 end
 
 def display_winner(winner)
-  prompt('you win the round!!!') if winner == PLAYER
+  prompt('you win the round!!') if winner == PLAYER
   prompt('the machine race wins the round!!!') if winner == CPU
   winner
-end
-
-def display_tie(tie)
-  prompt("YOU'RE BOTH WINNERS!!! (kind of)") if tie
-  tie
 end
 
 def prompt(str)
@@ -115,7 +152,7 @@ def change_player_character
       prompt("input a single character other than 'O' ")
       char = gets.chomp
       if char.size == 1 && char != 'O'
-        PLAYER[0] = char 
+        PLAYER[0] = char
         break
       else
         prompt("invalid input. plz try again.")
@@ -131,16 +168,20 @@ def display_score(score)
 end
 
 def display_grand_winner(score)
+  clear_screen
+  display_score(score)
   score[PLAYER] == 5 ? (puts VICTORY) : (puts DEFEAT)
 end
 
 def grand_winner?(score)
-  score.has_value?(5)
+  score.value?(5)
 end
 
+# body
 prompt("let's play TIC TAC TOE!!!")
 change_player_character
-score = {PLAYER => 0, CPU => 0}
+score = { PLAYER => 0, CPU => 0 }
+
 loop do
   turn = [true, false].sample
   loop do
@@ -152,14 +193,20 @@ loop do
     round_winner = winner?
     if round_winner
       update_score(score, round_winner)
-      if grand_winner?(score)
-        display_grand_winner(score)
-        exit
-      end
+      clear_screen
+      display_score(score)
+      display_board
       display_winner(round_winner)
       break
+    elsif tie?
+      prompt("you both win!! (kind of)")
+      break
     end
-    break if display_tie(tie?)
+  end
+
+  if grand_winner?(score)
+    display_grand_winner(score)
+    break
   end
 
   prompt("play again?")
