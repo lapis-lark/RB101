@@ -7,8 +7,8 @@ WINNING_COMBOS = [
   [1, 5, 9], [7, 5, 3]
 ]
 
-PLAYER = 'X'
-CPU = 'O'
+PLAYER = 'P'
+CPU = 'C'
 SCORE = { PLAYER => 0, CPU => 0 }
 MAX_WINS = 5
 WIN_NUM = 3
@@ -159,12 +159,12 @@ def valid_yes?
 end
 
 def change_player_character
-  prompt('is "X" okay as your marker?')
+  prompt('is "P" okay as your marker? (y/yes or n/no)')
   unless valid_yes?
     loop do
       prompt('input a single, non-integer character that\'s not a circle')
       char = gets.chomp
-      if char =~ /\b[^O\d\s]\b/
+      if char =~ /\b[^O\d\s]\b/i
         PLAYER[0] = char
         break
       else
@@ -216,7 +216,7 @@ def turn_type
   prompt('input "f" for first, "l" for last, or "r" for random')
   loop do
     ans = gets.chomp
-    break ans if ans =~ /\b(f|l|r)\b/
+    break ans if ans =~ /\b[flr]\b/i
     prompt("invalid input. plz try again.")
   end
 end
