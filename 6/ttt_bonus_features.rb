@@ -95,7 +95,7 @@ end
 def critical_move(type)
   defense = [CPU, PLAYER]
   defense.reverse! if type == 'offense'
-  
+
   WINNING_COMBOS.each do |combo|
     values = BOARD.values_at(*combo)
     next if values.include?(defense[0])
