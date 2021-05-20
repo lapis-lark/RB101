@@ -37,7 +37,20 @@ def score(card)
   end
 end
 
+# fix me :(
 def score_hand(hand)
+ ace = hand.index(:ace)
+ if ace
+  total = hand[0...ace].sum { |card| score(card) }
+  total += (total + 11 > 21 ? 1 : 11)
+ end
+  
+  last ? pre_aces = hand[0...last] : 
+
+
+
+  pre_aces = []
+  hand.each { |card| card == :ace ? break : no_aces << card }
   no_aces = hand.reject { |card| card == :ace }
   total = no_aces.sum { |card| score(card) }
   if hand.include?(:ace)
@@ -61,6 +74,7 @@ def bust?(hand)
 end
 
 def display_winner(winner, hands)
+  clear_screen
   prompt("your hand: #{format_cards(hands[:player])}")
   prompt("your total: #{score_hand(hands[:player])}")
   prompt("dealer's hand: #{format_cards(hands[:dealer])}")
@@ -78,6 +92,7 @@ def player_turn_messages(hands)
   prompt("dealer's hand: #{format_cards([hands[:dealer][0]])} " +
   "and an unknown card")
   prompt("your hand: #{format_cards(hands[:player])}")
+  prompt("current points: #{score_hand(hands[:player])}")
   prompt("will you hit or stay?")
 end
 
@@ -124,8 +139,10 @@ end
 loop do
   deal_hands(deck, hands)
   if player_turn(deck, hands) == 'bust'
+    prompt('you bust!')
     display_winner('dealer', hands)
   elsif dealer_turn(deck, hands) == 'bust'
+    prompt('the dealer bust!')
     display_winner('player', hands)
   else
     display_winner(determine_winner(hands), hands)
