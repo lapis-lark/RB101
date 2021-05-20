@@ -1,5 +1,5 @@
 BOARD = {}
-(1..16).each { |i| BOARD[i] = ' ' }
+(1..9).each { |i| BOARD[i] = ' ' }
 
 WINNING_COMBOS = [
   [1, 2, 3], [4, 5, 6], [7, 8, 9],
