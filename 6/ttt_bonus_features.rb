@@ -9,7 +9,6 @@ WINNING_COMBOS = [
 
 PLAYER = 'P'
 CPU = 'C'
-SCORE = { PLAYER => 0, CPU => 0 }
 MAX_WINS = 5
 WIN_NUM = 3
 
@@ -40,11 +39,11 @@ MSG
 def display_board
   board = BOARD.map { |k, v| BOARD[k] == ' ' ? k : v }
   printable = []
-  board.each_slice(3) do |row|
-    printable << " #{row[0]} | #{row[1]} | #{row[2]}\n"
+  board.each_slice(WIN_NUM) do |row|
+    printable << " #{row.join(" | ")}\n"
   end
 
-  puts printable.join("---+---+---\n")
+  puts printable.join("---#{'+---' * (WIN_NUM - 1)}\n")
   puts ''
 end
 
@@ -123,8 +122,8 @@ def tie?
   BOARD.values.none? { |v| v == ' ' }
 end
 
-def update_score(round_winner)
-  SCORE[round_winner] += 1
+def update_score(round_winner, score)
+  score[round_winner] += 1
 end
 
 def winner?
@@ -175,20 +174,20 @@ def change_player_character
   end
 end
 
-def display_score
-  puts "YOU: #{SCORE[PLAYER]}"
-  puts "CPU: #{SCORE[CPU]}"
+def display_score(score)
+  puts "YOU: #{score[PLAYER]}"
+  puts "CPU: #{score[CPU]}"
   puts ""
 end
 
-def display_grand_winner
+def display_grand_winner(score)
   clear_screen
-  display_score
-  SCORE[PLAYER] == MAX_WINS ? (puts VICTORY) : (puts DEFEAT)
+  display_score(score)
+  score[PLAYER] == MAX_WINS ? (puts VICTORY) : (puts DEFEAT)
 end
 
-def grand_winner?
-  SCORE.value?(MAX_WINS)
+def grand_winner?(score)
+  score.value?(MAX_WINS)
 end
 
 def reset
@@ -208,7 +207,7 @@ end
 def display_welcome_message
   clear_screen
   prompt("let's play TIC TAC TOE!!!")
-  prompt('earn eternal glory by reaching five victories before the AI')
+  prompt("earn eternal glory by reaching #{MAX_WINS} victories before the AI")
 end
 
 def turn_type
@@ -232,6 +231,7 @@ end
 
 # body
 display_welcome_message
+score = { PLAYER => 0, CPU => 0 }
 change_player_character
 type = turn_type
 
@@ -239,15 +239,15 @@ loop do
   turn = decide_first_player(type)
   loop do
     clear_screen
-    display_score
+    display_score(score)
     turn ? player_turn : computer_turn
     turn = !turn
 
     round_winner = winner?
     if round_winner
-      update_score(round_winner)
+      update_score(round_winner, score)
       clear_screen
-      display_score
+      display_score(score)
       display_board
       display_winner(round_winner)
       break
@@ -257,8 +257,8 @@ loop do
     end
   end
 
-  if grand_winner?
-    display_grand_winner
+  if grand_winner?(score)
+    display_grand_winner(score)
     break
   end
 
