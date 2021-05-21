@@ -62,11 +62,13 @@ def bust?(num)
 end
 
 def display_winner(winner, hands, total)
+  puts "=================================="
   prompt("your hand: #{format_cards(hands[:player])} \
 (#{total[:player]})")
 
   prompt("dealer's hand: #{format_cards(hands[:dealer])} \
 (#{total[:dealer]})")
+  puts "=================================="
 
   case winner
   when 'dealer' then prompt('crushing defeat!')
@@ -76,36 +78,27 @@ def display_winner(winner, hands, total)
 end
 
 def player_turn_messages(hands, total)
-  clear_screen
-
   prompt("dealer's hand: #{format_cards([hands[:dealer][0]])} \
 and an unknown card")
 
   prompt("your hand: #{format_cards(hands[:player])} \
 (#{total[:player]})")
 
-  prompt("will you hit or stay?")
-end
-
-def valid_move
-  loop do
-    case gets.chomp
-    when /\b(h|hit)\b/i then break 'hit'
-    when /\b(s|stay)\b/i then break 'stay'
-    else prompt('Please input either h/hit or s/stay')
-    end
-  end
+  prompt("will you (h)it or (s)tay?")
 end
 
 def player_turn(deck, hands, total)
   loop do
     player_turn_messages(hands, total)
-
-    case valid_move
-    when 'hit'
-      deal_card(deck, hands[:player])
-      total[:player] += score(hands[:player][-1])
-    when 'stay' then break false
+    loop do
+      case gets.chomp.downcase
+      when 'h'
+        deal_card(deck, hands[:player])
+        total[:player] += score(hands[:player][-1])
+        break
+      when 's' then break false
+      else prompt('please input either "h" for hit or "s" for stay')
+      end
     end
 
     break 'bust' if bust?(total[:player])
@@ -129,6 +122,7 @@ def determine_winner(total)
 end
 
 def reset(hands, deck, cards)
+  clear_screen
   hands.each { |k, _| hands[k] = [] }
   deck.each { |k, _| deck[k] = cards.clone }
 end
@@ -150,10 +144,10 @@ end
 
 def display_welcome_message
   clear_screen
-  prompt("welcome to #{MAXIMUM}! try to beat the dealer to #{MAX_WINS} wins!")
+  prompt("welcome to #{MAXIMUM}! try to beat the dealer to #{MAX_WINS} wins!\n\n")
 end
 
-
+display_welcome_message
 loop do
   deal_hands(deck, hands)
   total = {player: score_hand(hands[:player]),
