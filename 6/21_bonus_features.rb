@@ -1,4 +1,8 @@
 # deck structure copied from the small problems debugging problem "Card Deck"
+MAXIMUM = 21
+MAX_WINS = 5
+DEALER_STAYS = 17
+
 hands = { player: [], dealer: [] }
 
 cards = [2, 3, 4, 5, 6, 7, 8, 9, 10, :jack, :queen, :king, :ace]
@@ -26,19 +30,19 @@ def format_cards(arr)
   end
 end
 
-def score(card, total)
+def score(card, num = 0)
   case card
   when Integer then card
   when :ace
-    total > 10 ? 1 : 11
+    num > 10 ? 1 : 11
   else 10
   end
 end
 
 def score_hand(hand)
-  total = 0
-  hand.each { |card| total += score(card, total) }
-  total
+  num = 0
+  hand.each { |card| num += score(card, num) }
+  num
 end
 
 def deal_card(deck, hand)
@@ -53,32 +57,32 @@ def deal_hands(deck, hands)
   end
 end
 
-def bust?(hand)
-  score_hand(hand) > 21
+def bust?(num)
+  num > MAXIMUM
 end
 
-def display_winner(winner, hands)
+def display_winner(winner, hands, total)
   prompt("your hand: #{format_cards(hands[:player])} \
-(#{score_hand(hands[:player])})")
+(#{total[:player]})")
 
   prompt("dealer's hand: #{format_cards(hands[:dealer])} \
-(#{score_hand(hands[:dealer])})")
+(#{total[:dealer]})")
 
   case winner
   when 'dealer' then prompt('crushing defeat!')
-  when 'player' then prompt('everlasting glory is thine!')
+  when 'player' then prompt('everlasting blackjack glory is thine!')
   when 'draw' then prompt("it's a tie!")
   end
 end
 
-def player_turn_messages(hands)
+def player_turn_messages(hands, total)
   clear_screen
 
   prompt("dealer's hand: #{format_cards([hands[:dealer][0]])} \
 and an unknown card")
 
   prompt("your hand: #{format_cards(hands[:player])} \
-(#{score_hand(hands[:player])})")
+(#{total[:player]})")
 
   prompt("will you hit or stay?")
 end
@@ -93,30 +97,31 @@ def valid_move
   end
 end
 
-def player_turn(deck, hands)
+def player_turn(deck, hands, total)
   loop do
-    player_turn_messages(hands)
+    player_turn_messages(hands, total)
 
     case valid_move
-    when 'hit' then deal_card(deck, hands[:player])
+    when 'hit'
+      deal_card(deck, hands[:player])
+      total[:player] += score(hands[:player][-1])
     when 'stay' then break false
     end
 
-    break 'bust' if bust?(hands[:player])
+    break 'bust' if bust?(total[:player])
   end
 end
 
-def dealer_turn(deck, hands)
-  total = score_hand(hands[:dealer])
-  until total >= 17
+def dealer_turn(deck, hands, total)
+  until total[:dealer] >= DEALER_STAYS
     deal_card(deck, hands[:dealer])
-    total = score_hand(hands[:dealer])
+    total[:dealer] += hands[:dealer][-1]
   end
-  total > 21 ? 'bust' : false
+  total[:dealer] > MAXIMUM ? 'bust' : false
 end
 
-def determine_winner(hands)
-  case score_hand(hands[:dealer]) <=> score_hand(hands[:player])
+def determine_winner(total)
+  case total[:dealer] <=> total[:player]
   when -1 then 'player'
   when 0 then 'draw'
   when 1 then 'dealer'
@@ -143,16 +148,26 @@ def play_again?
   end
 end
 
+def display_welcome_message
+  clear_screen
+  prompt("welcome to #{MAXIMUM}! try to beat the dealer to #{MAX_WINS} wins!")
+end
+
+
 loop do
   deal_hands(deck, hands)
-  if player_turn(deck, hands) == 'bust'
+  total = {player: score_hand(hands[:player]),
+           dealer: score_hand(hands[:dealer])
+          }
+
+  if player_turn(deck, hands, total) == 'bust'
     prompt('you bust!')
-    display_winner('dealer', hands)
-  elsif dealer_turn(deck, hands) == 'bust'
+    display_winner('dealer', hands, total)
+  elsif dealer_turn(deck, hands, total) == 'bust'
     prompt('the dealer bust!')
-    display_winner('player', hands)
+    display_winner('player', hands, total)
   else
-    display_winner(determine_winner(hands), hands)
+    display_winner(determine_winner(total), hands, total)
   end
 
   play_again? ? reset(hands, deck, cards) : break
