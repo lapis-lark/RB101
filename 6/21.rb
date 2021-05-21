@@ -1,5 +1,3 @@
-require 'pry-byebug'
-
 # deck structure copied from the small problems debugging problem "Card Deck"
 hands = { player: [], dealer: [] }
 
@@ -28,34 +26,19 @@ def format_cards(arr)
   end
 end
 
-def score(card)
+def score(card, total)
   case card
-  when :king  then 10
-  when :queen then 10
-  when :jack  then 10
-  else card
+  when Integer then card
+  when :ace
+    total > 10 ? 1 : 11
+  else 10
   end
 end
 
 # fix me :(
 def score_hand(hand)
- ace = hand.index(:ace)
- if ace
-  total = hand[0...ace].sum { |card| score(card) }
-  total += (total + 11 > 21 ? 1 : 11)
- end
-  
-  last ? pre_aces = hand[0...last] : 
-
-
-
-  pre_aces = []
-  hand.each { |card| card == :ace ? break : no_aces << card }
-  no_aces = hand.reject { |card| card == :ace }
-  total = no_aces.sum { |card| score(card) }
-  if hand.include?(:ace)
-    total += (total + 11 > 21 ? 1 : 11)
-  end
+  total = 0
+  hand.each { |card| total += score(card, total) }
   total
 end
 
@@ -74,11 +57,11 @@ def bust?(hand)
 end
 
 def display_winner(winner, hands)
-  clear_screen
-  prompt("your hand: #{format_cards(hands[:player])}")
-  prompt("your total: #{score_hand(hands[:player])}")
-  prompt("dealer's hand: #{format_cards(hands[:dealer])}")
-  prompt("dealer's total: #{score_hand(hands[:dealer])}")
+  prompt("your hand: #{format_cards(hands[:player])} \
+(#{score_hand(hands[:player])})")
+
+  prompt("dealer's hand: #{format_cards(hands[:dealer])} \
+(#{score_hand(hands[:dealer])})")
 
   case winner
   when 'dealer' then prompt('crushing defeat!')
@@ -89,14 +72,17 @@ end
 
 def player_turn_messages(hands)
   clear_screen
-  prompt("dealer's hand: #{format_cards([hands[:dealer][0]])} " +
-  "and an unknown card")
-  prompt("your hand: #{format_cards(hands[:player])}")
-  prompt("current points: #{score_hand(hands[:player])}")
+
+  prompt("dealer's hand: #{format_cards([hands[:dealer][0]])} \
+and an unknown card")
+
+  prompt("your hand: #{format_cards(hands[:player])} \
+(#{score_hand(hands[:player])})")
+
   prompt("will you hit or stay?")
 end
 
-def valid_answer
+def valid_move
   loop do
     case gets.chomp
     when /\b(h|hit)\b/i then break 'hit'
@@ -110,12 +96,12 @@ def player_turn(deck, hands)
   loop do
     player_turn_messages(hands)
 
-    case valid_answer
+    case valid_move
     when 'hit' then deal_card(deck, hands[:player])
     when 'stay' then break false
     end
 
-    break 'dealer' if bust?(hands[:player])
+    break 'bust' if bust?(hands[:player])
   end
 end
 
@@ -136,6 +122,26 @@ def determine_winner(hands)
   end
 end
 
+def reset(hands, deck, cards)
+  hands.each { |k, _| hands[k] = [] }
+  deck.each { |k, _| deck[k] = cards.clone }
+end
+
+def play_again?
+  prompt('will you play again? (y/yes or n/no)')
+  loop do
+    ans = gets.chomp
+    case ans
+    when /\b(y|yes)\b/i
+      break true
+    when /\b(n|no)\b/i
+      break false
+    else
+      prompt('please input either y/yes or n/no')
+    end
+  end
+end
+
 loop do
   deal_hands(deck, hands)
   if player_turn(deck, hands) == 'bust'
@@ -148,5 +154,6 @@ loop do
     display_winner(determine_winner(hands), hands)
   end
 
-  break unless false
+  play_again? ? reset(hands, deck, cards) : break
 end
+prompt('thanks for playing!!')
