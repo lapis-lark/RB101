@@ -1,10 +1,10 @@
-# deck structure copied from the small problems debugging problem "Card Deck"
 MAXIMUM = 21
 MAX_WINS = 5
 DEALER_STAYS = 17
 
 hands = { player: [], dealer: [] }
 
+# deck structure copied from the small problems debugging problem "Card Deck"
 cards = [2, 3, 4, 5, 6, 7, 8, 9, 10, :jack, :queen, :king, :ace]
 
 deck = { hearts: cards.clone,
@@ -47,7 +47,9 @@ end
 
 def deal_card(deck, hand)
   suit = deck.keys.sample
-  hand << (deck[suit].delete(deck[suit].sample))
+  card = (deck[suit].delete(deck[suit].sample))
+  hand << card
+  card
 end
 
 def deal_hands(deck, hands)
@@ -71,8 +73,8 @@ def display_winner(winner, hands, total)
   puts "=================================="
 
   case winner
-  when 'dealer' then prompt('crushing defeat!')
-  when 'player' then prompt('everlasting blackjack glory is thine!')
+  when 'dealer' then prompt('you lost the round!')
+  when 'player' then prompt('you won the round!')
   when 'draw' then prompt("it's a tie!")
   end
 end
@@ -83,22 +85,29 @@ and an unknown card")
 
   prompt("your hand: #{format_cards(hands[:player])} \
 (#{total[:player]})")
+end
 
-  prompt("will you (h)it or (s)tay?")
+def valid_move
+  loop do
+    ans = gets.chomp.downcase
+    break ans if %w(h s).include?(ans)
+    prompt('please input either "h" for hit or "s" for stay')
+  end
 end
 
 def player_turn(deck, hands, total)
+  player_turn_messages(hands, total)
   loop do
-    player_turn_messages(hands, total)
-    loop do
-      case gets.chomp.downcase
-      when 'h'
-        deal_card(deck, hands[:player])
-        total[:player] += score(hands[:player][-1])
-        break
-      when 's' then break false
-      else prompt('please input either "h" for hit or "s" for stay')
-      end
+    prompt("will you (h)it or (s)tay?")
+    case valid_move
+    when 'h'
+      card = deal_card(deck, hands[:player])
+      prompt("you drew a #{format_cards([card])}!")
+      total[:player] += score(hands[:player][-1])
+      prompt("your hand is now: #{format_cards(hands[:player])} \
+(#{total[:player]})")
+    when 's' 
+      break prompt("you stayed at #{total[:player]}")
     end
 
     break 'bust' if bust?(total[:player])
@@ -106,18 +115,30 @@ def player_turn(deck, hands, total)
 end
 
 def dealer_turn(deck, hands, total)
+  prompt('dealer turn...')
   until total[:dealer] >= DEALER_STAYS
-    deal_card(deck, hands[:dealer])
-    total[:dealer] += hands[:dealer][-1]
+    card = deal_card(deck, hands[:dealer])
+    prompt("the dealer drew a #{format_cards([card])}!")
+    total[:dealer] += score(hands[:dealer][-1])
   end
-  total[:dealer] > MAXIMUM ? 'bust' : false
+
+  if total[:dealer] > MAXIMUM
+    'bust'
+  else
+    prompt("the dealer stays at #{total[:dealer]}")
+  end
 end
 
-def determine_winner(total)
+def determine_winner(total, round_wins)
   case total[:dealer] <=> total[:player]
-  when -1 then 'player'
-  when 0 then 'draw'
-  when 1 then 'dealer'
+  when -1
+    round_wins[:player] += 1
+    'player'
+  when 0
+    'draw'
+  when 1
+    round_wins[:dealer] += 1
+    'dealer'
   end
 end
 
@@ -144,24 +165,51 @@ end
 
 def display_welcome_message
   clear_screen
-  prompt("welcome to #{MAXIMUM}! try to beat the dealer to #{MAX_WINS} wins!\n\n")
+  prompt("welcome to #{MAXIMUM}! try to beat the dealer to \
+#{MAX_WINS} wins!\n\n")
+end
+
+def display_round_wins(round_wins)
+  puts "YOU: #{round_wins[:player]}"
+  puts "CPU: #{round_wins[:dealer]}"
+  puts ""
+end
+
+def grand_winner?(round_wins)
+  round_wins.value?(MAX_WINS)
+end
+
+def display_grand_winner(round_wins)
+  if round_wins[:player] == MAX_WINS
+    prompt('everlasting blackjack glory is thine!!'.upcase)
+  else
+    prompt('crushing defeat!!'.upcase)
+  end
 end
 
 display_welcome_message
+round_wins = {player: 0, dealer: 0}
 loop do
   deal_hands(deck, hands)
-  total = {player: score_hand(hands[:player]),
-           dealer: score_hand(hands[:dealer])
-          }
+  display_round_wins(round_wins)
+  total = { player: score_hand(hands[:player]),
+           dealer: score_hand(hands[:dealer]) }
 
   if player_turn(deck, hands, total) == 'bust'
     prompt('you bust!')
+    round_wins[:dealer] += 1
     display_winner('dealer', hands, total)
   elsif dealer_turn(deck, hands, total) == 'bust'
     prompt('the dealer bust!')
+    round_wins[:player] += 1
     display_winner('player', hands, total)
   else
-    display_winner(determine_winner(total), hands, total)
+    display_winner(determine_winner(total, round_wins), hands, total)
+  end
+
+  if grand_winner?(round_wins)
+    display_grand_winner(round_wins)
+    break
   end
 
   play_again? ? reset(hands, deck, cards) : break
