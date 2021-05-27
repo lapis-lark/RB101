@@ -2,6 +2,18 @@ MAXIMUM = 21
 MAX_WINS = 5
 DEALER_STAYS = 17
 
+INTRODUCTION = <<~MSG
+welcome to #{MAXIMUM}! 
+try to get a higher score than the dealer without going over #{MAXIMUM}.
+
+you can either "hit" to get another card or "stay" to compete with your current cards.
+a score over #{21} means you "bust" (lose). 
+the dealer must hit until their score is at least 17.
+aces are worth 11 if your score is 10 or less, otherwise just 1.
+try to beat the dealer to #{MAX_WINS} wins!
+
+MSG
+
 hands = { player: [], dealer: [] }
 
 # deck structure based on the small problems debugging problem "Card Deck"
@@ -100,7 +112,7 @@ end
 
 def hit(hitter, deck, hands, total)
   card = deal_card(deck, hands[hitter])
-  total[hitter] += score(hands[hitter][-1])
+  total[hitter] += score(hands[hitter][-1], total[hitter])
   card
 end
 
@@ -169,8 +181,7 @@ end
 
 def display_welcome_message
   clear_screen
-  prompt("welcome to #{MAXIMUM}! try to beat the dealer to \
-#{MAX_WINS} wins!\n\n")
+  prompt(INTRODUCTION)
 end
 
 def display_round_wins(round_wins)
