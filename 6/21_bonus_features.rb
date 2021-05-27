@@ -5,12 +5,12 @@ DEALER_STAYS = 17
 hands = { player: [], dealer: [] }
 
 # deck structure copied from the small problems debugging problem "Card Deck"
-cards = [2, 3, 4, 5, 6, 7, 8, 9, 10, :jack, :queen, :king, :ace]
+cards = [2, 3, 4, 5, 6, 7, 8, 9, 10, :Jack, :Queen, :King, :Ace]
 
-deck = { hearts: cards.clone,
-         diamonds: cards.clone,
-         clubs: cards.clone,
-         spades: cards.clone }
+deck = { Hearts: cards.clone,
+         Diamonds: cards.clone,
+         Clubs: cards.clone,
+         Spades: cards.clone }
 
 def clear_screen
   system('clear')
@@ -20,8 +20,12 @@ def prompt(str)
   puts "~~> #{str}"
 end
 
+def proper_card_name(card)
+  "#{card[:value]} of #{card[:suit]}"
+end
+
 def format_cards(arr)
-  arr = arr.map { |card| card.instance_of?(Symbol) ? card.capitalize : card }
+  arr = arr.map { |card| proper_card_name(card) }
 
   case arr.size
   when 1 then arr[0]
@@ -31,10 +35,9 @@ def format_cards(arr)
 end
 
 def score(card, num = 0)
-  case card
-  when Integer then card
-  when :ace
-    num > 10 ? 1 : 11
+  case card[:value]
+  when Integer then card[:value]
+  when :Ace then (num > 10 ? 1 : 11)
   else 10
   end
 end
@@ -47,13 +50,13 @@ end
 
 def deal_card(deck, hand)
   suit = deck.keys.sample
-  card = (deck[suit].delete(deck[suit].sample))
-  hand << card
-  card
+  value = (deck[suit].delete(deck[suit].sample))
+  hand << { value: value, suit: suit }
+  { value: value, suit: suit }
 end
 
 def deal_hands(deck, hands)
-  2.times do 
+  2.times do
     deal_card(deck, hands[:player])
     deal_card(deck, hands[:dealer])
   end
@@ -95,19 +98,24 @@ def valid_move
   end
 end
 
+def hit_sequence(hitter, deck, hands, total)
+  card = deal_card(deck, hands[hitter])
+  actor = (hitter == :player ? 'you' : 'the dealer')
+  prompt("#{actor} drew a #{format_cards([card])}!")
+  total[hitter] += score(hands[hitter][-1])
+end
+
 def player_turn(deck, hands, total)
   player_turn_messages(hands, total)
   loop do
     prompt("will you (h)it or (s)tay?")
     case valid_move
     when 'h'
-      card = deal_card(deck, hands[:player])
-      prompt("you drew a #{format_cards([card])}!")
-      total[:player] += score(hands[:player][-1])
+      hit_sequence(:player, deck, hands, total)
       prompt("your hand is now: #{format_cards(hands[:player])} \
 (#{total[:player]})")
-    when 's' 
-      break prompt("you stayed at #{total[:player]}")
+    when 's'
+      break prompt("you stay at #{total[:player]}")
     end
 
     break 'bust' if bust?(total[:player])
@@ -117,9 +125,7 @@ end
 def dealer_turn(deck, hands, total)
   prompt('dealer turn...')
   until total[:dealer] >= DEALER_STAYS
-    card = deal_card(deck, hands[:dealer])
-    prompt("the dealer drew a #{format_cards([card])}!")
-    total[:dealer] += score(hands[:dealer][-1])
+    hit_sequence(:dealer, deck, hands, total)
   end
 
   if total[:dealer] > MAXIMUM
@@ -188,12 +194,12 @@ def display_grand_winner(round_wins)
 end
 
 display_welcome_message
-round_wins = {player: 0, dealer: 0}
+round_wins = { player: 0, dealer: 0 }
 loop do
   deal_hands(deck, hands)
   display_round_wins(round_wins)
   total = { player: score_hand(hands[:player]),
-           dealer: score_hand(hands[:dealer]) }
+            dealer: score_hand(hands[:dealer]) }
 
   if player_turn(deck, hands, total) == 'bust'
     prompt('you bust!')
