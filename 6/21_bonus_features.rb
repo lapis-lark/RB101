@@ -3,12 +3,12 @@ MAX_WINS = 5
 DEALER_STAYS = 17
 
 INTRODUCTION = <<~MSG
-welcome to #{MAXIMUM}! 
+welcome to #{MAXIMUM}!#{' '}
 try to get a higher score than the dealer without going over #{MAXIMUM}.
 
 you can either "hit" to get another card or "stay" to compete with your current cards.
-a score over #{21} means you "bust" (lose). 
-the dealer must hit until their score is at least 17.
+a score over #{MAXIMUM} means you "bust" (lose).
+the dealer must hit until their score is at least #{DEALER_STAYS}.
 aces are worth 11 if your score is 10 or less, otherwise just 1.
 try to beat the dealer to #{MAX_WINS} wins!
 
