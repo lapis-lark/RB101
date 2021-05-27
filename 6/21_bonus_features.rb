@@ -4,13 +4,13 @@ DEALER_STAYS = 17
 
 hands = { player: [], dealer: [] }
 
-# deck structure copied from the small problems debugging problem "Card Deck"
-cards = [2, 3, 4, 5, 6, 7, 8, 9, 10, :Jack, :Queen, :King, :Ace]
+# deck structure based on the small problems debugging problem "Card Deck"
+cards = [2, 3, 4, 5, 6, 7, 8, 9, 10, :jack, :queen, :king, :ace]
 
-deck = { Hearts: cards.clone,
-         Diamonds: cards.clone,
-         Clubs: cards.clone,
-         Spades: cards.clone }
+deck = { hearts: cards.clone,
+         diamonds: cards.clone,
+         clubs: cards.clone,
+         spades: cards.clone }
 
 def clear_screen
   system('clear')
@@ -21,7 +21,7 @@ def prompt(str)
 end
 
 def proper_card_name(card)
-  "#{card[:value]} of #{card[:suit]}"
+  "#{card[:value].to_s.capitalize} of #{card[:suit].capitalize}"
 end
 
 def format_cards(arr)
@@ -37,7 +37,7 @@ end
 def score(card, num = 0)
   case card[:value]
   when Integer then card[:value]
-  when :Ace then (num > 10 ? 1 : 11)
+  when :ace then (num > 10 ? 1 : 11)
   else 10
   end
 end
