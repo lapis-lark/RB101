@@ -160,12 +160,9 @@ def play_again?
   loop do
     ans = gets.chomp
     case ans
-    when /\b(y|yes)\b/i
-      break true
-    when /\b(n|no)\b/i
-      break false
-    else
-      prompt('please input either y/yes or n/no')
+    when /\b(y|yes)\b/i then break true
+    when /\b(n|no)\b/i then break false
+    else prompt('please input either y/yes or n/no')
     end
   end
 end
