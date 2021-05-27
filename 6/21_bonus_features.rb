@@ -98,11 +98,10 @@ def valid_move
   end
 end
 
-def hit_sequence(hitter, deck, hands, total)
+def hit(hitter, deck, hands, total)
   card = deal_card(deck, hands[hitter])
-  actor = (hitter == :player ? 'you' : 'the dealer')
-  prompt("#{actor} drew a #{format_cards([card])}!")
   total[hitter] += score(hands[hitter][-1])
+  card
 end
 
 def player_turn(deck, hands, total)
@@ -111,7 +110,8 @@ def player_turn(deck, hands, total)
     prompt("will you (h)it or (s)tay?")
     case valid_move
     when 'h'
-      hit_sequence(:player, deck, hands, total)
+      card = hit(:player, deck, hands, total)
+      prompt("you drew a #{format_cards([card])}")
       prompt("your hand is now: #{format_cards(hands[:player])} \
 (#{total[:player]})")
     when 's'
@@ -125,7 +125,8 @@ end
 def dealer_turn(deck, hands, total)
   prompt('dealer turn...')
   until total[:dealer] >= DEALER_STAYS
-    hit_sequence(:dealer, deck, hands, total)
+    card = hit(:dealer, deck, hands, total)
+    prompt("the deaer drew a #{format_cards([card])}")
   end
 
   if total[:dealer] > MAXIMUM
