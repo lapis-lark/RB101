@@ -32,6 +32,13 @@ def prompt(str)
   puts "~~> #{str}"
 end
 
+def enter_to_continue
+  prompt('press enter to continue')
+  loop do 
+    break if gets.chomp == ''
+  end
+end
+
 def proper_card_name(card)
   "#{card[:value].to_s.capitalize} of #{card[:suit].capitalize}"
 end
@@ -104,7 +111,7 @@ end
 
 def valid_move
   loop do
-    ans = gets.chomp.downcase
+    ans = gets.chomp.downcase.strip
     break ans if %w(h s).include?(ans)
     prompt('please input either "h" for hit or "s" for stay')
   end
@@ -130,7 +137,10 @@ def player_turn(deck, hands, total)
       break prompt("you stay at #{total[:player]}")
     end
 
-    break 'bust' if bust?(total[:player])
+    if bust?(total[:player])
+      prompt('you bust!')
+      break
+    end
   end
 end
 
@@ -138,17 +148,18 @@ def dealer_turn(deck, hands, total)
   prompt('dealer turn...')
   until total[:dealer] >= DEALER_STAYS
     card = hit(:dealer, deck, hands, total)
-    prompt("the deaer drew a #{format_cards([card])}")
+    prompt("the dealer drew a #{format_cards([card])}")
   end
 
-  if total[:dealer] > MAXIMUM
-    'bust'
-  else
+  unless bust?(total[:dealer])
     prompt("the dealer stays at #{total[:dealer]}")
   end
 end
 
 def determine_winner(total, round_wins)
+  if bust?(total[:player]) then return 'dealer'
+  if bust?(total[:dealer]) then return 'player'
+  
   case total[:dealer] <=> total[:player]
   when -1
     round_wins[:player] += 1
@@ -167,15 +178,19 @@ def reset(hands, deck, cards)
   deck.each { |k, _| deck[k] = cards.clone }
 end
 
+def valid_yes_no
+  loop do
+    ans = gets.chomp.downcase.strip
+    break ans if %w(y yes n no).include?(ans)
+    prompt('please input either y/yes or n/no')
+  end
+end
+
 def play_again?
   prompt('will you play again? (y/yes or n/no)')
-  loop do
-    ans = gets.chomp
-    case ans
-    when /\b(y|yes)\b/i then break true
-    when /\b(n|no)\b/i then break false
-    else prompt('please input either y/yes or n/no')
-    end
+  case valid_yes_no
+  when /(y|yes)/ then true
+  when /(n|no)/ then false
   end
 end
 
@@ -202,7 +217,13 @@ def display_grand_winner(round_wins)
   end
 end
 
+def play_round(deck, hands, total)
+  player_turn(deck, hands, total)
+  dealer_turn(deck, hands, total) unless bust?(total[:player])
+end
+
 display_welcome_message
+enter_to_continue
 round_wins = { player: 0, dealer: 0 }
 loop do
   deal_hands(deck, hands)
@@ -210,17 +231,9 @@ loop do
   total = { player: score_hand(hands[:player]),
             dealer: score_hand(hands[:dealer]) }
 
-  if player_turn(deck, hands, total) == 'bust'
-    prompt('you bust!')
-    round_wins[:dealer] += 1
-    display_winner('dealer', hands, total)
-  elsif dealer_turn(deck, hands, total) == 'bust'
-    prompt('the dealer bust!')
-    round_wins[:player] += 1
-    display_winner('player', hands, total)
-  else
-    display_winner(determine_winner(total, round_wins), hands, total)
-  end
+  play_round(deck, hands, total)
+  winner = determine_winner(total, round_wins)
+  display_winner(winner, hands, total)
 
   if grand_winner?(round_wins)
     display_grand_winner(round_wins)
@@ -230,3 +243,5 @@ loop do
   play_again? ? reset(hands, deck, cards) : break
 end
 prompt('thanks for playing!!')
+end
+end
