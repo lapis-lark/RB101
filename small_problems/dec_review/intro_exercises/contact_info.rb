@@ -16,7 +16,21 @@ contacts.each do |k, v|
   i += 1
 end
 
-p contacts
-
 p contacts['Joe Smith'][:email]
 p contacts['Sally Johnson'][:phone]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+keys = [:email, :address, :phone]
+
