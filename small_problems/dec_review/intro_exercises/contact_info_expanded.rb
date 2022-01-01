@@ -8,7 +8,9 @@ keys = [:email, :address, :phone]
 contacts.each do |contact, _|
   info_set = contact_data.shift
 
-  keys.each_with_index do |key, i|
-    contact[key] = info_set[i]
+  keys.each do |key|
+    contacts[contact][key] = info_set.shift
   end
 end
+
+p contacts
