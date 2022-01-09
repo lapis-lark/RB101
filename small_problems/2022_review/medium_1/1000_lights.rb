@@ -6,7 +6,7 @@ def how_many_lights(lights)
       l_arr.include?(l) ? l_arr.delete(l) : l_arr << l
     end
   end
-  
+
   l_arr
 end
 
