@@ -24,7 +24,3 @@ def minilang(instructions)
 
   operations(commands)
 end
-
-minilang('4 PUSH 5 MULT PUSH 3 ADD PUSH 7 SUB PUSH 5 PUSH 3 MOD DIV PRINT')
-
-minilang('4 PUSH 5 MULT PUSH 3 ADD PUSH 7 SUB PRINT')
