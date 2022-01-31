@@ -7,7 +7,7 @@ end
 def valid_num
   loop do
     num = gets.chomp
-    break num.to_f if num.to_i.to_s == num
+    break num.to_f if num.to_f.to_s == num
     prompt('invalid, try again: ')
   end
 end
