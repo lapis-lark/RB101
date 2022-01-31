@@ -6,11 +6,11 @@ WIN_CASES = { 'r' => %w(sc l),
 
 VALID_CHOICES = %w(r p sc sp l)
 
-LETTER_TO_CHOICE = { 'r' => 'rock',
-'p' => 'paper',
-'sc' => 'scissors',
-'sp' => 'spock',
-'l' => 'lizard' }
+NAMES = { 'r' => 'rock',
+          'p' => 'paper',
+          'sc' => 'scissors',
+          'sp' => 'spock',
+          'l' => 'lizard' }
 
 def prompt(str)
   puts "=> #{str}"
@@ -47,26 +47,26 @@ def get_cpu_choice
 end
 
 def get_winner(player, cpu)
-  case
-  when player == cpu then :tie
-  when WIN_CASES[player].include?(cpu) then :player
+  if player == cpu then :tie
+  elsif WIN_CASES[player].include?(cpu) then :player
   else :cpu
   end
 end
 
-def display_winner(winner)
+def display_winner(winner, player, cpu)
   message = case winner
-  when :player then "you win!"
-  when :cpu then "the cpu wins!"
-  else "it's a tie!"
-  end
+            when :player then "you win the round!"
+            when :cpu then "the cpu wins the round!"
+            else "it's a tie!"
+            end
 
+  prompt("you chose #{NAMES[player]}, and the computer chose #{NAMES[cpu]}.")
   prompt(message)
 end
 
 def welcome
   clear_screen
-  prompt("Welcome to RPSLS!!")
+  prompt("Welcome to RPSLS! Win 5 rounds to become the grand champion!!")
   prompt('press enter to continue')
   gets
 end
@@ -74,6 +74,23 @@ end
 def quit_now?
   prompt("enter 'q' to quit or hit enter to continue to next round.")
   gets.chomp == 'q'
+end
+
+def grandwinner?(scores)
+  scores.value?(5)
+end
+
+def display_grandwinner(scores)
+  clear_screen
+  message = if scores[:player] > scores[:cpu]
+              'you are the grandchampion!!'.upcase
+            else
+              'the computer is the grandchampion!!'.upcase
+            end
+
+  display_scores(scores)
+  prompt(message)
+  puts
 end
 
 scores = { player: 0, cpu: 0 }
@@ -87,8 +104,15 @@ loop do
 
   winner = get_winner(player, cpu)
   update_scores(scores, winner)
-  display_scores(scores)
-  display_winner(winner)
-  break if quit_now?
 
+  if grandwinner?(scores)
+    display_grandwinner(scores)
+    break
+  end
+
+  display_scores(scores)
+  display_winner(winner, player, cpu)
+  break if quit_now?
 end
+
+prompt('thanks for playing! (;')
