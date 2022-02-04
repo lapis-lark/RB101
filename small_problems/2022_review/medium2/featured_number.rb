@@ -1,5 +1,13 @@
+# LS solution for generating a valid number is easier to read
 def featured(num)
+  valid = ((num / 7) + 1) * 7
+  valid += 7 unless valid.odd?
 
+  loop do
+    break valid if valid.digits.uniq == valid.digits
+    break "no possible featured number" if valid > 9_876_543_210
+    valid += 14
+  end
 end
 
 p featured(12) == 21
