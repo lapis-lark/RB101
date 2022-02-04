@@ -1,3 +1,4 @@
+# further
 def triangle(num, corner)
   lines = []
   num.times { |i| lines << ('*' * (i + 1)).rjust(num) }
