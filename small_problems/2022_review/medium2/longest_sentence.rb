@@ -21,8 +21,5 @@ end
 frankenstein = File.read("frankenstein.txt")
 domnei = File.read("domnei.txt")
 
-# print_longest_sentence(four_score)
-
 p longest_word(frankenstein)
-
 p longest_word(domnei)
