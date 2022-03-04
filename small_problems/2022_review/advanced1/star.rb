@@ -51,4 +51,16 @@ sine_wave(2, 0.25)
 puts ''
 puts ''
 sine_wave(10, 0.1)
+puts ''
+puts ''
+sine_wave(10, 0.05)
+puts ''
+puts ''
+sine_wave(10, 0.2)
+puts ''
+puts ''
+sine_wave(10, 0.3)
+puts ''
+puts ''
+sine_wave(10, 0.4)
 
