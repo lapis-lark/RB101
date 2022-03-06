@@ -1,5 +1,3 @@
-require 'byebug'
-
 def merge_sort(arr)
   #byebug
   return arr if arr.size < 2
