@@ -1,20 +1,9 @@
-=begin
-welcome
-initialize deck
-loop
-  deal hands
-  hit or stay
-  dealer hit or stay
-  calculate scores
-  break if bust or staystay
-end
-display winner
-play again?
-
-=end
-
 def prompt(str)
   puts ">> #{str}"
+end
+
+def clear_screen
+  system('clear')
 end
 
 def initialize_deck
@@ -69,13 +58,24 @@ def print_hands(player, dealer, values)
     break
   end
   puts "#{"Unknown card\n" * (dealer.values.flatten.size - 1)}"
+  puts ''
+end
+
+def print_hand(hand, value, who)
+  prompt("#{who} cards (#{value})")
+  hand.each do |suit, cards| 
+    cards.each { |c| puts "#{c} of #{suit}" }
+  end
+  puts ''
 end
 
 def deal_card(deck, hand, doer)
   suit = deck.keys.sample
   card = deck[suit].delete(deck[suit].sample)
   hand[suit] << card
-  prompt("#{doer} drew a #{card} of #{suit}. . .")
+  prompt("you drew a #{card} of #{suit}. . .") if doer == :you
+  prompt("the dealer hits") if doer == :dealer
+  puts ''
 end
 
 def hit_or_stay(deck, player)
@@ -87,25 +87,84 @@ def hit_or_stay(deck, player)
     prompt('invalid. please try again.')
   end
 
+  clear_screen
   return ans if ans == 's'
-  deal_card(deck, player, 'you')
+  deal_card(deck, player, :you)
 end
 
 def dealer_turn(deck, dealer, values)
-  values[:dealer] >= 17 ? nil : deal_card(deck, dealer, 'the dealer')
+  if values[:dealer] >= 17
+    prompt("the dealer stays") 
+    puts ''
+  else
+    deal_card(deck, dealer, :dealer)
+  end
 end
 
-deck = initialize_deck
-player = Hash.new { |hash, key| hash[key] = [] }
-dealer = player.dup
-values = {player: 0, dealer: 0}
+def determine_winner(values)
+  return :dealer if values[:player] > 21
+  return :player if values[:dealer] > 21
+  case values[:dealer] <=> values[:player]
+  when -1 then :player
+  when 0 then :tie
+  when 1 then :dealer
+  end
+end
 
-deal_hands(deck, player, dealer)
+def update_scores(scores, winner)
+  case winner
+  when :player then scores[:player] += 1
+  when :dealer then scores[:dealer] += 1
+  end
+end
+
+def display_scores(scores)
+  puts "you: #{scores[:player]}"
+  puts "dealer: #{scores[:dealer]}"
+  puts "\n" * 2
+end
+
+def display_winner(winner, player_value, dealer_value)
+  ans = case winner
+  when :player then "you win!"
+  when :dealer then "the dealer wins!"
+  when :tie then "it's a tie!"
+  end
+  prompt(ans)
+end
+
 loop do
+  deck = initialize_deck
+  player = Hash.new { |hash, key| hash[key] = [] }
+  dealer = player.dup
+  values = {player: 0, dealer: 0}
+  scores = {player: 0, dealer: 0}
+
+  deal_hands(deck, player, dealer)
+  clear_screen
+  loop do
+    update_hand_values(player, dealer, values)
+    print_hands(player, dealer, values)
+    break if hit_or_stay(deck, player) == 's'
+    break if hand_value(player) >= 21
+    dealer_turn(deck, dealer, values)
+    break if hand_value(dealer) > 21
+  end
+  loop do
+    break if hand_value(dealer) >= 17
+    dealer_turn(deck, dealer, values)
+  end
+  # byebug
   update_hand_values(player, dealer, values)
-  print_hands(player, dealer, values)
-  break if hit_or_stay(deck, player) == 's'
-  break if hand_value(player) >= 21
-  dealer_turn(deck, dealer, values)
-  break if hand_value(dealer) > 21
+  winner = determine_winner(values)
+  update_scores(scores, winner)
+  # display_scores(scores)
+  display_winner(winner, hand_value(player), hand_value(dealer))
+  print_hand(player, hand_value(player), 'your')
+  print_hand(dealer, hand_value(dealer), "the dealer's")
+
+  prompt("will you play again? (y/n)")
+  ans = gets.chomp.downcase
+  break unless ans == 'y'
 end
+prompt('thanks for playing ^^')
