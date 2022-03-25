@@ -7,8 +7,7 @@ end
 puts n
 
 # NOTES
-# the block parameter overshadows the local variable n from the outer scope
-
+# the block parameter overshadows the local variable n from the outer scope, preventing it from being accessed within the block; rather, `n` refers to the block parameter within the block
 
 
 
