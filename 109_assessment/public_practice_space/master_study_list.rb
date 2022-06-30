@@ -1,24 +1,3 @@
-# LOCAL VARIABLE SCOPE
-
-# outer scope accessable by inner scope
-# inner scope inaccessable by outer scope
-a = 1
-
-loop do
-  a = 2
-  b = 3
-
-  puts a
-  puts b
-  break
-end
-
-puts a
-puts b
-=begin
-
-=end
-
 # Lesson 2 Section 18, Variable Scope
 # peer scopes do not intersect
 2.times do
