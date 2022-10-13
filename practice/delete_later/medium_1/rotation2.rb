@@ -5,7 +5,7 @@ end
 def rotate_rightmost_digits(num, digits)
    num = num.digits.reverse
    num = num[0...-digits] + rotate_array(num[-digits..-1])
-   num.join('').to_i
+   num.join.to_i
 end
 
 p rotate_rightmost_digits(735291, 1) == 735291
