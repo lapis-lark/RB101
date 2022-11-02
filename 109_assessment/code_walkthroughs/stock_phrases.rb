@@ -34,3 +34,9 @@ i -= 1
 Integer#- is called on local variable `i` with an argument of 1.
 `i` is then reassigned to the return value of this method.
 =end
+
+# mutating methods mutate the object referenced by
+# the caller, whereas non-mutating methods create a new 
+# object and do not mutate the object referenced by the caller
+
+# SELECT evaluates the return value of the block

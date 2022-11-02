@@ -1,13 +1,7 @@
-require 'byebug'
-
-stack = []
-reg = 0
-
 def minilang(commands)
   commands = commands.split(' ')
   stack = []
   reg = 0
-  # byebug
   until commands.empty?
     command = commands.shift
     case command
